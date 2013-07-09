@@ -1,0 +1,6 @@
+Population: 800
+Families: 40
+Classification: CLASSA 80
+Classification: Fisherman 240
+Classification: Snake 400
+Classification: FISHBOY 90
