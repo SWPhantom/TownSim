@@ -12,6 +12,8 @@ public class Human
 	public Name name;
 	public byte gender;
 	public int age;
+	public long mother;
+	public long father;
 
 	//CONSTRUCTORS:
 	public Human(){

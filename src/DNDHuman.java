@@ -10,19 +10,18 @@ public class DNDHuman extends Human
 		super();
 	}
 
-	//a = fname, b = lname, c = gender, d = classifcation
-	public DNDHuman(String a, String b, byte c){
-		super(a, b, c);
+	public DNDHuman(String firstName, String lastName, byte gender){
+		super(firstName, lastName, gender);
 	}
 
 
-	public DNDHuman(String a, byte c){
-		super(a, c);
+	public DNDHuman(String firstName, byte gender){
+		super(firstName, gender);
 	}
 
-	public DNDHuman(String a, String b, byte c, String d){
-		super(a,b,c);
-		this.classification=d;
+	public DNDHuman(String firstName, String lastName, byte gender, String classification){
+		super(firstName, lastName, gender);
+		this.classification = classification;
 	}
 
 	public String getClassification(){
@@ -30,16 +29,16 @@ public class DNDHuman extends Human
 	}
 
 	public void setClassification(String newClassification){
-		classification=newClassification;
+		classification = newClassification;
 	}
 
 	//METHODS:
 	//Debug:
 	public String toString(){
-		String output = "ID: "+this.ID+" ; NAME: "+this.getFullName()+ "; CLASSIFICATION: " + this.getClassification() + "\n";
+		String output = "ID: " + this.ID + " ; NAME: "+this.getFullName() + "; CLASSIFICATION: " + this.getClassification() + "\n";
 		return output;
 	}
 	public String toOutput(){
-		return this.getFullName()+": "+this.getClassification()+"\n";
+		return this.getFullName() + ": " + this.getClassification() + "\n";
 	}
 }
