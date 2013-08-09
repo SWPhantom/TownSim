@@ -83,7 +83,7 @@ public class Human
 
 	//Debug:
 	public String toString(){
-		String output = "DEBUG : ID: "+this.ID+" ; NAME: "+this.getFullName();
+		String output = "DEBUG : ID: " + this.ID + " ; NAME: " + this.getFullName();
 		return output;
 	}
 }

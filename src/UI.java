@@ -9,9 +9,6 @@ public class UI
 	final int LAST_NAMES = 0;
 	final int FIRST_NAMES_FEMALE = 1;
 	final int FIRST_NAMES_MALE = 2;
-	ArrayList<String> lastNames = new ArrayList<String>();
-	ArrayList<String> firstNamesFemale = new ArrayList<String>();
-	ArrayList<String> firstNamesMale = new ArrayList<String>();
 	Scanner key = new Scanner(System.in);
 	Parser runtime = new Parser();
 	LineageGenerator famGen = new LineageGenerator();
