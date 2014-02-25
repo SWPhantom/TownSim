@@ -14,17 +14,25 @@ import java.util.Random;
 
 
 
-public class FamilyTree {
+/**
+ * @author zfrolov
+ *
+ */
+public class FamilyTree {	
+////DECLARATIONS///////////////////////////////////////////////////////////////
+	////Statics
 	public final static int FEMALE = 1;
 	public final static int MALE = 0;
 	public final static int MIN_REPRORUCTIVE_AGE = 15;
 	
+	////Class variables
 	ArrayList<Human> humans;
 	ArrayList<String> males;
 	ArrayList<String> females;
 	ArrayList<String> lasts;
 	Random rand = new Random();
 	
+////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public FamilyTree() {
 		humans = new ArrayList<Human>();
 		males = new ArrayList<String>();
@@ -33,6 +41,19 @@ public class FamilyTree {
 		
 	}
 	
+////METHODS////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Method generate
+	 * Generates the eligible last names, generates the Humans with random
+	 * gender assignment and names.
+	 * 
+	 * @param families (int) The number of families to generate (last names).
+	 * @param people (int) The number of total people to generate.
+	 * @param males (ArrayList<String>) List of male first names.
+	 * @param females (ArrayList<String>) List of female first names.
+	 * @param lasts (ArrayList<String>) List of last names.
+	 */
 	public void generate(int families, int people, ArrayList<String> males, ArrayList<String> females, ArrayList<String> lasts) {
 		this.males = males;
 		this.females = females;
@@ -62,22 +83,17 @@ public class FamilyTree {
 		ages(people);
 	}
 	
-	private void ages(int population){
-		int ages[] = new int[population];
-		for(int i = 0; i < population; ++i){
-			ages[i] = rand.nextInt(100);
-		}
-		
-		Arrays.sort(ages);
-		
-		for(int i = 0; i < population; ++i){
-			humans.get(i).setAge(ages[population - 1 - i]); 
-			
-		}
-		
-		
-	}
-	
+	/**
+	 * Method interconnect
+	 * Starts attempting to create parent/child connections for every
+	 * Human. Using the value returned by helper function makeConnection,
+	 * this attempts to stop connections ASAP.
+	 * 
+	 * TODO: Transition to eligibility queues/lists.
+	 * 
+	 * @param maxOffspring (int) Uses this is a ceiling for the number of kids
+	 *        per human.
+	 */
 	public void interconnect(int maxOffspring) {
 		for(int i = 0; i < humans.size(); ++i){
 			for(int j = 0; j < rand.nextInt(maxOffspring); ++j){
@@ -99,10 +115,32 @@ public class FamilyTree {
 		}
 	}
 
+	////Helpers
+	
+	/**
+	 * Method makeConnection
+	 * Checks to see if the parent and child candidates are eligible for 
+	 * pairing.
+	 *  If not, return a non-'1' int. the caller function uses the return for
+	 * action.
+	 *  If so, connect both Humans via parentID and childID fields and
+	 * return 1.
+	 * 
+	 * TODO: Transition to eligibility queues/lists.
+	 * 
+	 * @param parent (int) referencing the ID number of parent.
+	 * @param child (int) referencing the ID number of child.
+	 * @return (int) The following is what the caller function knows:
+	 * 				-1: Failure: End attempts to connect these two now.
+	 * 				 0: Failure: Try to attempt connections again.
+	 * 				 1: Success: End attempts to connect these two now.
+	 */
 	private int makeConnection(int parent, int child) {
 		boolean fatherless = humans.get(child).getFatherID() == -1;
 		boolean motherless = humans.get(child).getMotherID() == -1;
 		int parentGender = humans.get(parent).getGender();
+		
+		//If the parent is not of eligible reproductive age, terminate now.
 		if(humans.get(parent).getAge() < MIN_REPRORUCTIVE_AGE){
 			return -1;
 		}
@@ -119,7 +157,50 @@ public class FamilyTree {
 		}
 		return 0;
 	}
+	
+	
+	/**
+	 * Method ages
+	 * This creates a distribution of ages and assigns them to the Human
+	 * objects.
+	 * 
+	 * TODO: Change 100 to a static final field, defined elsewhere. This is
+	 *       to simulate different age ranges.
+	 * 
+	 * @param population (int) defines how many ages to generate.
+	 */
+	private void ages(int population){
+		int ages[] = new int[population];
+		for(int i = 0; i < population; ++i){
+			ages[i] = rand.nextInt(100);
+		}
+		
+		Arrays.sort(ages);
+		
+		for(int i = 0; i < population; ++i){
+			humans.get(i).setAge(ages[population - 1 - i]); 
+			
+		}
+	}
 
+	////Debug
+	
+	/**
+	 * Method DEBUG_PRINT
+	 * Current desired output:
+	 * 
+	 * Martinella Stranbii(99)
+	 *
+	 * Brighinzone Stranbii(90)
+	 *  Children:
+  	 *   Baccone de Calce
+	 *   Giollius de Calce
+	 *   Giovanna de Calce
+	 *   Cambius Simonis
+	 *   Berardus Doberti
+	 * 
+	 * Cambius Simonis(88)
+	 */
 	public void DEBUG_PRINT() {
 		for(int i = 0; i < humans.size(); ++i){
 			System.out.println(humans.get(i).getName() + "(" + humans.get(i).getAge() + ")");

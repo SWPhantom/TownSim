@@ -6,23 +6,19 @@ import java.io.*;
 import java.util.*;
 public class Parser
 {
-	//STATICS:
+////DECLARATIONS///////////////////////////////////////////////////////////////
+	////Statics
 	public final static int MALE = 0;
 	public final static int FEMALE = 1;
 	public final static int LAST = 2;
 	
-	//DECLARATIONS:
+	////Class Variables
 	public ArrayList<String> lastNames;
 	public ArrayList<String> firstNamesMale;
 	public ArrayList<String> firstNamesFemale;
 	Random randomGen;
 
-	//CONSTRUCTORS:
-	/**
-	 * Parser Constructor
-	 * Creates a Parser object and initializes the name ArrayLists and
-	 * a Random object.
-	 */
+////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public Parser(){
 		lastNames = new ArrayList<String>();
 		firstNamesMale = new ArrayList<String>();
@@ -30,9 +26,11 @@ public class Parser
 		randomGen = new Random();
 	}
 
-	//METHODS:
-	//Names:
-	
+////METHODS////////////////////////////////////////////////////////////////////
+	/**
+	 * @param choice (int) Number which specifies which list to return.
+	 * @return (ArrayList<Sting>) List of names.
+	 */
 	public ArrayList<String> getNameList(int choice){
 		if(choice == MALE){//Male first names
 			return firstNamesMale;
@@ -46,7 +44,6 @@ public class Parser
 		}
 	}
 	
-	//Helpers:
 	/**
 	 * Method feedInput
 	 * Fills Specified ArrayList with names parsed from a text file.
@@ -93,7 +90,7 @@ public class Parser
 		}
 	}
 
-	//Debug:
+	////Debug:
 	public String DEBUG_arraySizes(){
 		return "DEBUG : Last names size: "+lastNames.size()+". Male names size: "+firstNamesMale.size()+". Female names size: "+firstNamesFemale.size();
 	}

@@ -6,15 +6,13 @@ package in.dangerbear.crafting;
 import java.util.ArrayList;
 
 
-/**
- * @author SWPhantom
- *
- */
 public class Human extends Node {
+////DECLARATIONS///////////////////////////////////////////////////////////////
+	////Statics
+	public final static int FEMALE = 1;
+	public final static int MALE = 0;
 	
-////Declarations///////////////////////////////////////////////////////////////
-	public final int FEMALE = 1;
-	public final int MALE = 0;
+	////Class Variables
 	public String lastName;
 	public String firstName;
 	public int gender;
@@ -24,10 +22,7 @@ public class Human extends Node {
 	public ArrayList<Integer> children;
 	
 	
-////Constructors///////////////////////////////////////////////////////////////
-	/**
-	 * 
-	 */
+////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public Human() {
 		super();
 		children = new ArrayList<Integer>();
@@ -55,7 +50,7 @@ public class Human extends Node {
 	}
 	
 	
-////Methods////////////////////////////////////////////////////////////////////
+////METHODS////////////////////////////////////////////////////////////////////
 	public int getFatherID() {
 		return fatherID;
 	}
@@ -72,10 +67,18 @@ public class Human extends Node {
 		return lastName;
 	}
 	
+	
+	/**
+	 * @return (String) Full name of the human.
+	 */
 	public String getName() {
 		return firstName + " " + lastName;
 	}
 	
+	
+	/**
+	 * @return (ArrayList<int>) A list of IDs, which are object's offspring.
+	 */
 	public ArrayList<Integer> getChildren() {
 		return children;
 	}
@@ -115,7 +118,4 @@ public class Human extends Node {
 	public void setAge(int age) {
 		this.age = age;
 	}
-	
-	
-
 }
