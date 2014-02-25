@@ -4,6 +4,7 @@
 package in.dangerbear.crafting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -55,6 +56,24 @@ public class FamilyTree {
 		}
 		males.clear();
 		females.clear();
+		
+		ages(people);
+	}
+	
+	private void ages(int population){
+		int ages[] = new int[population];
+		for(int i = 0; i < population; ++i){
+			ages[i] = rand.nextInt(100);
+		}
+		
+		Arrays.sort(ages);
+		
+		for(int i = 0; i < population; ++i){
+			humans.get(i).setAge(ages[population - 1 - i]); 
+			
+		}
+		
+		
 	}
 	
 	public void interconnect(int maxOffspring) {
@@ -93,7 +112,7 @@ public class FamilyTree {
 	public void DEBUG_PRINT() {
 		System.out.println("Mark 1" + humans.size());
 		for(int i = 0; i < humans.size(); ++i){
-			System.out.println(humans.get(i).getName() + "\n Children:");
+			System.out.println(humans.get(i).getName() + "(" + humans.get(i).getAge() + ")\n Children:");
 			for(int j = 0; j < humans.get(i).getNumChildren(); ++j){
 				System.out.println("  " + humans.get(humans.get(i).children.get(j)).getName());
 			}
