@@ -12,7 +12,7 @@ public class Run {
 		Parser parser = new Parser();
 		FamilyTree tree = new FamilyTree();
 		
-		String filepath = "Names/US";
+		String filepath = "Names/Italy";
 		
 		parser.feedInput(filepath, MALE);
 		parser.feedInput(filepath, FEMALE);

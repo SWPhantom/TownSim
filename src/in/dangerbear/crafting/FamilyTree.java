@@ -121,7 +121,6 @@ public class FamilyTree {
 	}
 
 	public void DEBUG_PRINT() {
-		System.out.println("Mark 1" + humans.size());
 		for(int i = 0; i < humans.size(); ++i){
 			System.out.println(humans.get(i).getName() + "(" + humans.get(i).getAge() + ")");
 			if(humans.get(i).getNumChildren() > 0){
