@@ -123,10 +123,14 @@ public class FamilyTree {
 	public void DEBUG_PRINT() {
 		System.out.println("Mark 1" + humans.size());
 		for(int i = 0; i < humans.size(); ++i){
-			System.out.println(humans.get(i).getName() + "(" + humans.get(i).getAge() + ")\n Children:");
-			for(int j = 0; j < humans.get(i).getNumChildren(); ++j){
-				System.out.println("  " + humans.get(humans.get(i).children.get(j)).getName());
+			System.out.println(humans.get(i).getName() + "(" + humans.get(i).getAge() + ")");
+			if(humans.get(i).getNumChildren() > 0){
+				System.out.println(" Children:");
+				for(int j = 0; j < humans.get(i).getNumChildren(); ++j){
+					System.out.println("  " + humans.get(humans.get(i).children.get(j)).getName());
+				}
 			}
+			System.out.println();
 		}
 	}
 
