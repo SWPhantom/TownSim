@@ -17,6 +17,8 @@ import java.util.Random;
 public class FamilyTree {
 	public final static int FEMALE = 1;
 	public final static int MALE = 0;
+	public final static int MIN_REPRORUCTIVE_AGE = 15;
+	
 	ArrayList<Human> humans;
 	ArrayList<String> males;
 	ArrayList<String> females;
@@ -81,32 +83,41 @@ public class FamilyTree {
 			for(int j = 0; j < rand.nextInt(maxOffspring); ++j){
 				boolean keepGoing = true;
 				int tempCounter = 0;
-				while(keepGoing && !makeConnection(i, rand.nextInt(humans.size()))){
+				while(keepGoing){
+					int result = makeConnection(i, rand.nextInt(humans.size()));
+					if(result == -1 || result == 1){//If the parent is not eligible to be a parent OR there was a successful pairing.
+						keepGoing = false;
+					}
+					if(result == 0){//A single failure occurred
+						tempCounter++;
+					}
 					if(tempCounter == 50){//Too many failures
 						keepGoing = false;
 					}
-					tempCounter++;
 				}
 			}
 		}
 	}
 
-	private boolean makeConnection(int parent, int child) {
+	private int makeConnection(int parent, int child) {
 		boolean fatherless = humans.get(child).getFatherID() == -1;
 		boolean motherless = humans.get(child).getMotherID() == -1;
 		int parentGender = humans.get(parent).getGender();
+		if(humans.get(parent).getAge() < MIN_REPRORUCTIVE_AGE){
+			return -1;
+		}
 		if((!motherless && !fatherless) || (!fatherless && parentGender == MALE) || (!motherless && parentGender == FEMALE)){
-			return false;
+			return 0;
 		}else if(parentGender == MALE){
 			humans.get(child).setFatherID(parent);
 			humans.get(parent).addChild(child);
-			return true;
+			return 1;
 		}else if(parent == FEMALE){
 			humans.get(child).setMotherID(parent);
 			humans.get(parent).addChild(child);
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 
 	public void DEBUG_PRINT() {

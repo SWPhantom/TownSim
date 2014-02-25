@@ -6,6 +6,11 @@ import java.io.*;
 import java.util.*;
 public class Parser
 {
+	//STATICS:
+	public final static int MALE = 0;
+	public final static int FEMALE = 1;
+	public final static int LAST = 2;
+	
 	//DECLARATIONS:
 	public ArrayList<String> lastNames;
 	public ArrayList<String> firstNamesMale;
@@ -29,52 +34,15 @@ public class Parser
 	//Names:
 	
 	public ArrayList<String> getNameList(int choice){
-		if(choice == 0){//Male first names
+		if(choice == MALE){//Male first names
 			return firstNamesMale;
-		}else if(choice == 1){//Female first names
+		}else if(choice == FEMALE){//Female first names
 			return firstNamesFemale;
-		}else if(choice == 2){//Last names
+		}else if(choice == LAST){//Last names
 			return lastNames;
 		}else{
 			System.out.println("Problem with Parser->getNameList");
 			return null;
-		}
-	}
-	public String getLastName(){
-		return lastNames.get(randomGen.nextInt(lastNames.size()));
-	}
-	
-	public String getFirstName(){
-		int temp = randomGen.nextInt(2);
-		if(temp == 1){
-			return firstNamesFemale.get(randomGen.nextInt(firstNamesFemale.size()));
-		}else{
-			return firstNamesMale.get(randomGen.nextInt(firstNamesMale.size()));
-		}
-	}
-	
-	public String getFirstName(int a){
-		if(a == 1){
-			return firstNamesFemale.get(randomGen.nextInt(firstNamesFemale.size()));
-		}else{
-			return firstNamesMale.get(randomGen.nextInt(firstNamesMale.size()));
-		}
-	}
-	
-	public String getFirstName(String lastName){
-		int temp = randomGen.nextInt(2);
-		if(temp == 1){
-			return firstNamesFemale.get(randomGen.nextInt(firstNamesFemale.size())) + " " + lastName;
-		}else{
-			return firstNamesMale.get(randomGen.nextInt(firstNamesMale.size())) + " " + lastName;
-		}
-	}
-	
-	public String getFirstName(String lastName, int a){
-		if(a == 1){
-			return firstNamesFemale.get(randomGen.nextInt(firstNamesFemale.size()));
-		}else{
-			return firstNamesMale.get(randomGen.nextInt(firstNamesMale.size()));
 		}
 	}
 	
@@ -89,33 +57,33 @@ public class Parser
 	 */
 	public void feedInput(String filepath, int choice){
 		String fullPath = filepath;
-		if(choice == 0){//Male first names
+		if(choice == MALE){//Male first names
 			fullPath += "_FirstNames_Male.txt";
-		}else if(choice == 1){//Female first names
+		}else if(choice == FEMALE){//Female first names
 			fullPath += "_FirstNames_Female.txt";
-		}else if(choice == 2){//Last names
+		}else if(choice == LAST){//Last names
 			fullPath += "_LastNames.txt";
 		}
 		File file = new File(fullPath);
 		try{
 			Scanner s = new Scanner(file);
 
-			if(choice == 0){
-				lastNames.clear();
+			if(choice == MALE){
+				firstNamesMale.clear();
 				while (s.hasNext()){
-					lastNames.add(s.nextLine());
+					firstNamesMale.add(s.nextLine());
 				}
 			}
-			if(choice == 1){
+			if(choice == FEMALE){
 				firstNamesFemale.clear();
 				while (s.hasNext()){
 					firstNamesFemale.add(s.nextLine());
 				}
 			}
-			if(choice == 2){
-				firstNamesMale.clear();
+			if(choice == LAST){
+				lastNames.clear();
 				while (s.hasNext()){
-					firstNamesMale.add(s.nextLine());
+					lastNames.add(s.nextLine());
 				}
 			}
 			s.close();
