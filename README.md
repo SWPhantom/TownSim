@@ -21,8 +21,11 @@ hard work will make your PCs cry your name out in *The Halls of Magnificent DMs*
 
 
 The players burn the city down. 
+
 Everyone is dead.
+
 Only parents who have lost their children know your pain.
+
 	
 	
 Lament no more! TownSim will allow you to create the same interconnected societies
@@ -31,7 +34,7 @@ propagation that takes into account each NPC's characteristics (better to commit
 crimes in the presence of deafmute orphans, rather than in the constable's office).
 
 
-#### Compilation:
+### Compilation:
 ##### Eclipse
 1. Download the project files.
 2. Import the project into Eclipse.
@@ -51,25 +54,26 @@ public final static String NAME_FILEPATH = "Names/Italy";
 ```
 
 __These will be moved away from the java source code and put into an external config
-file for easier editing__
+file for easier editing.__
 
-Depending on where you run this, you may need to play around with the `Name` folder
+Depending on where you run this application, you may need to play around with the `Name` folder
 placement. 
 
-#### Features:
+### Features:
 Planned
 ~~Implemented~~
 
 Phase I: Static NPC Generation
+
 * Part A: Biological Systems
-  * Simple 
-    * ~~Name.~~
-    * ~~Age.~~
-    * ~~Gender.~~
-    * Family Lines. - `50%`
-  * Defined
-    * Age Distributions.
-    * Gender Distributions.
+  	* Simple 
+    	* ~~Name.~~
+    	* ~~Age.~~
+    	* ~~Gender.~~
+    	* Family Lines. - `50%`
+  	* Defined
+    	* Age Distributions.
+    	* Gender Distributions.
       
 *Procedural NPC Generation
   
