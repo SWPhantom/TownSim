@@ -1,11 +1,12 @@
 package in.dangerbear.crafting;
 
+
 public class Run {
 	public final static int MALE = 0;
 	public final static int FEMALE = 1;
 	public final static int LAST = 2;
-	public final static int FAMILIES = 5;
-	public final static int POPULATION = 20;
+	public final static int FAMILIES = 80;
+	public final static int POPULATION = 2000;
 	public final static int OFFSPRING_MAX = 20;
 	public final static String NAME_FILEPATH = "Names/Italy";
 	

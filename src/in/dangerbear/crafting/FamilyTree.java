@@ -12,12 +12,6 @@ import java.util.Random;
  *
  */
 
-
-
-/**
- * @author zfrolov
- *
- */
 public class FamilyTree {	
 ////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
@@ -173,13 +167,17 @@ public class FamilyTree {
 		int ages[] = new int[population];
 		for(int i = 0; i < population; ++i){
 			ages[i] = rand.nextInt(100);
+			//ages[i] = (rand.nextGaussian()/3);
 		}
 		
 		Arrays.sort(ages);
+		/*for(int i = 0; i < ages.length; ++i){
+			ages[i] += ages[0];
+			ages[i] = ages[i] * 25 + 35;
+		}*/
 		
 		for(int i = 0; i < population; ++i){
-			humans.get(i).setAge(ages[population - 1 - i]); 
-			
+			humans.get(i).setAge(ages[population - 1 - i]);
 		}
 	}
 
