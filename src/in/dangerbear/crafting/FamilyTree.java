@@ -5,6 +5,7 @@ package in.dangerbear.crafting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Random;
 
 /**
@@ -21,6 +22,7 @@ public class FamilyTree {
 	
 	////Class variables
 	ArrayList<Human> humans;
+	BitSet eligibilityList1;
 	ArrayList<String> males;
 	ArrayList<String> females;
 	ArrayList<String> lasts;
@@ -32,7 +34,6 @@ public class FamilyTree {
 		males = new ArrayList<String>();
 		females = new ArrayList<String>();
 		lasts = new ArrayList<String>();
-		
 	}
 	
 ////METHODS////////////////////////////////////////////////////////////////////
@@ -52,6 +53,7 @@ public class FamilyTree {
 		this.males = males;
 		this.females = females;
 		this.lasts = lasts;
+		eligibilityList1 = new BitSet(people);
 		String tempLasts[] = new String[families];
 		String tempLastName;
 		String tempFirstName;
@@ -109,6 +111,28 @@ public class FamilyTree {
 		}
 	}
 
+	
+	/**
+	 * Method nthConnections
+	 * Returns a list of IDs that correspond to the target Human's N linked
+	 * Human Nodes.
+	 * ie. If you call this function on a child with two parents and no kids,
+	 * the returned list will contain only his parents for N = 1.
+	 * If you call the same function with N = 2, you will get a list of the
+	 * child's parents AND grandparents.
+	 * 
+	 * @param humanID
+	 * @return
+	 */
+	public ArrayList<Integer> nthConnections(int humanID, int n){
+		ArrayList<Integer> output = new ArrayList<Integer>();
+		
+		
+		return output;
+	}
+
+	
+	
 	////Helpers
 	
 	/**
@@ -171,10 +195,6 @@ public class FamilyTree {
 		}
 		
 		Arrays.sort(ages);
-		/*for(int i = 0; i < ages.length; ++i){
-			ages[i] += ages[0];
-			ages[i] = ages[i] * 25 + 35;
-		}*/
 		
 		for(int i = 0; i < population; ++i){
 			humans.get(i).setAge(ages[population - 1 - i]);
@@ -182,6 +202,18 @@ public class FamilyTree {
 	}
 
 	////Debug
+	
+	/**
+	 * Method displayMemory
+	 * Shows off the memory used at the moment.
+	 * 
+	 */
+	public static void displayMemory(){
+	    Runtime r=Runtime.getRuntime();
+	    r.gc();
+	    r.gc();
+	    System.out.println("Memory Used="+(r.totalMemory()-r.freeMemory()));
+	}
 	
 	/**
 	 * Method DEBUG_PRINT
