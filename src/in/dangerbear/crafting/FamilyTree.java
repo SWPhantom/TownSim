@@ -125,14 +125,38 @@ public class FamilyTree {
 	 * @return
 	 */
 	public ArrayList<Integer> nthConnections(int humanID, int n){
+		eligibilityList1.clear();
 		ArrayList<Integer> output = new ArrayList<Integer>();
 		
+		nthConnectionsHelper(humanID, n);
 		
+		
+		for(int i = 0; i < humans.size(); ++i){
+			if(eligibilityList1.get(i)){
+				output.add(i);
+			}
+		}
 		return output;
 	}
+	
+	/**
+	 * Method printNthConnections
+	 * 
+	 * 
+	 * @param humanID
+	 * @param n
+	 */
+	public void printNthConnections(int humanID, int n){
+		System.out.println("Printing " + humanID + "th " + n + "connections.");
+		ArrayList<Integer> outputList = this.nthConnections(humanID, n);
+		
+		for(Integer i: outputList){
+			System.out.println(humans.get(i).toString());
+		}
+		System.out.println();
+	}
 
-	
-	
+
 	////Helpers
 	
 	/**
@@ -198,6 +222,47 @@ public class FamilyTree {
 		
 		for(int i = 0; i < population; ++i){
 			humans.get(i).setAge(ages[population - 1 - i]);
+		}
+	}
+	
+	/**
+	 * Method nthConnectionsHelper
+	 * 
+	 * 
+	 * @param humanID
+	 * @param n
+	 */
+	private void nthConnectionsHelper(int humanID, int n){
+		//If this Human has been accessed already, stop!
+		if(eligibilityList1.get(humanID)){
+			return;
+		}
+		
+		//Add yourself to the list.
+		eligibilityList1.set(humanID);
+		
+		//If you're the last connection to be checked, stop before querying your connections.
+		if(n == 0){
+			return;
+		}
+		
+		//Stores the potential familiy to check.
+		ArrayList<Integer> payload = new ArrayList<Integer>();
+		
+		//Get the parents.
+		int temp = humans.get(humanID).getFatherID();
+		if(temp != -1) payload.add(temp);
+		temp = humans.get(humanID).getMotherID();
+		if(temp != -1) payload.add(temp);
+		
+		//Time to add the children. Create a temp ArrayList.
+		ArrayList<Integer> tempChildren = humans.get(humanID).getChildren();
+		for(int i = 0; i < tempChildren.size(); ++i){
+			payload.add(tempChildren.get(i));
+		}
+		
+		for(int i = 0; i < payload.size(); ++i){
+			nthConnectionsHelper(payload.get(i), n - 1);
 		}
 	}
 

@@ -94,6 +94,17 @@ public class Human extends Node {
 	public int getGender() {
 		return gender;
 	}
+	
+	public int getNumFamilyConnections(){
+		int output = children.size();
+		if(this.getMotherID() != -1){
+			output++;
+		}
+		if(this.getFatherID() != -1){
+			output++;
+		}
+		return output;
+	}
 
 	public void setFatherID(int fatherID) {
 		this.fatherID = fatherID;
@@ -117,5 +128,10 @@ public class Human extends Node {
 	
 	public void setAge(int age) {
 		this.age = age;
+	}
+
+	@Override
+	public String toString() {
+		return "Human [lastName=" + lastName + ", firstName=" + firstName + "]";
 	}
 }

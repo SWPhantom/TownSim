@@ -1,6 +1,5 @@
 package in.dangerbear.crafting;
 
-
 public class Run {
 	public final static int MALE = 0;
 	public final static int FEMALE = 1;
@@ -20,7 +19,17 @@ public class Run {
 		
 		tree.generate(FAMILIES, POPULATION, parser.getNameList(MALE), parser.getNameList(FEMALE), parser.getNameList(LAST));
 		tree.interconnect(OFFSPRING_MAX);
-		tree.DEBUG_PRINT();
+		tree.printNthConnections(0, 1);
+		tree.printNthConnections(0, 2);
+		tree.printNthConnections(0, 3);
+		tree.printNthConnections(1, 1);
+		tree.printNthConnections(1, 2);
+		tree.printNthConnections(1, 3);
+		tree.printNthConnections(2, 1);
+		tree.printNthConnections(2, 2);
+		tree.printNthConnections(2, 3);
+		
+		//tree.DEBUG_PRINT();
 	}
 
 }
