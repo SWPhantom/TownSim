@@ -53,7 +53,7 @@ public class Parser
 	 * @param choice (int) A number that specifies which name ArrayList to dump the data into.
 	 */
 	public void feedInput(String filepath, int choice){
-		String fullPath = filepath;
+		String fullPath = "Names/" + filepath;
 		if(choice == MALE){//Male first names
 			fullPath += "_FirstNames_Male.txt";
 		}else if(choice == FEMALE){//Female first names

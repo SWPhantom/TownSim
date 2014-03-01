@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * @author SWPhantom
@@ -16,9 +17,15 @@ import java.util.Random;
 public class FamilyTree {	
 ////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
-	public final static int FEMALE = 1;
 	public final static int MALE = 0;
-	public final static int MIN_REPRODUCTIVE_AGE = 15;
+	public final static int FEMALE = 1;
+	public final static int LAST = 2;
+	
+	public static int FAMILIES = 80;
+	public static int POPULATION = 2000;
+	public static int MAX_OFFSPRING = 20;
+	public static int MIN_REPRODUCTIVE_AGE = 15;
+	public static String NAME_FILEPATH = "US";
 	
 	////Class variables
 	ArrayList<Human> humans;
@@ -27,13 +34,18 @@ public class FamilyTree {
 	ArrayList<String> females;
 	ArrayList<String> lasts;
 	Random rand = new Random();
+	Parser parser;
 	
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public FamilyTree() {
 		humans = new ArrayList<Human>();
-		males = new ArrayList<String>();
-		females = new ArrayList<String>();
-		lasts = new ArrayList<String>();
+		parser = new Parser();
+		
+		//Choose and parse name files.
+		parser.feedInput(NAME_FILEPATH, MALE);
+		parser.feedInput(NAME_FILEPATH, FEMALE);
+		parser.feedInput(NAME_FILEPATH, LAST);
+		
 	}
 	
 ////METHODS////////////////////////////////////////////////////////////////////
@@ -49,16 +61,17 @@ public class FamilyTree {
 	 * @param females (ArrayList<String>) List of female first names.
 	 * @param lasts (ArrayList<String>) List of last names.
 	 */
-	public void generate(int families, int people, ArrayList<String> males, ArrayList<String> females, ArrayList<String> lasts) {
-		this.males = males;
-		this.females = females;
-		this.lasts = lasts;
-		eligibilityList1 = new BitSet(people);
-		String tempLasts[] = new String[families];
+	public void generate() {
+		this.males = parser.getNameList(MALE);
+		this.females = parser.getNameList(FEMALE);
+		this.lasts = parser.getNameList(LAST);
+		
+		eligibilityList1 = new BitSet(POPULATION);
+		String tempLasts[] = new String[FAMILIES];
 		String tempLastName;
 		String tempFirstName;
 		
-		for(int i = 0; i < families; ++i){
+		for(int i = 0; i < FAMILIES; ++i){
 			//
 			// TODO: make sure last names don't repeat
 			// 
@@ -67,7 +80,7 @@ public class FamilyTree {
 		}
 		lasts.clear();
 		
-		for(int i = 0; i < people; ++i){
+		for(int i = 0; i < POPULATION; ++i){
 			tempLastName = tempLasts[rand.nextInt(tempLasts.length)];
 			if(rand.nextInt(2) == 0){//Male created
 				tempFirstName = males.get(rand.nextInt(males.size()));
@@ -81,7 +94,8 @@ public class FamilyTree {
 		females.clear();
 		
 		//Generate the ages of the populace.
-		ages(people);
+		ages();
+		interconnect();
 	}
 	
 	/**
@@ -90,13 +104,8 @@ public class FamilyTree {
 	 * Human. Using the value returned by helper function makeConnection,
 	 * this attempts to stop connections ASAP.
 	 * 
-	 * TODO: Transition to eligibility queues/lists.
-	 * TODO: maxOffspring should be a config-based variable.
-	 * 
-	 * @param maxOffspring (int) Uses this is a ceiling for the number of kids
-	 *        per human.
 	 */
-	public void interconnect(int maxOffspring) {
+	private void interconnect() {
 		for(int i = 0; i < humans.size(); ++i){
 			Human parent = humans.get(i);
 			//Hit the lowest age. No one after this can have children. End!
@@ -152,7 +161,7 @@ public class FamilyTree {
 			
 			//Attempt to make a random amount of connections between the current
 			//node and the eligible children nodes.
-			for(int j = 0; j < rand.nextInt(maxOffspring); ++j){
+			for(int j = 0; j < rand.nextInt(MAX_OFFSPRING); ++j){
 				//There's only one eligible unit left! Connect and stop.
 				if(eligibleChildren.size() == 1){
 					makeConnection(i, eligibleChildren.get(0));
@@ -211,6 +220,26 @@ public class FamilyTree {
 		}
 		System.out.println();
 	}
+	
+	/**
+	 * Method readConfig
+	 * 
+	 * 
+	 */
+	public static void readConfig(){
+		Scanner s = new Scanner("Configs/Genetics.build");
+		while(s.hasNext()){
+			String inputToken = s.next();
+			switch(inputToken){
+			case "POPULATION:": POPULATION = s.nextInt(); break;
+            case "FAMILIES:": FAMILIES = s.nextInt(); break;
+            case "OFFSPRING_MAX:": MAX_OFFSPRING = s.nextInt(); break;
+            case "NAME_FILEPATH:": NAME_FILEPATH = s.next(); break;
+            default: break;
+			}
+		}
+		s.close();
+	}
 
 
 	////Helpers
@@ -251,17 +280,17 @@ public class FamilyTree {
 	 * 
 	 * @param population (int) defines how many ages to generate.
 	 */
-	private void ages(int population){
-		int ages[] = new int[population];
-		for(int i = 0; i < population; ++i){
+	private void ages(){
+		int ages[] = new int[POPULATION];
+		for(int i = 0; i < POPULATION; ++i){
 			ages[i] = rand.nextInt(100);
 			//ages[i] = (rand.nextGaussian()/3);
 		}
 		
 		Arrays.sort(ages);
 		
-		for(int i = 0; i < population; ++i){
-			humans.get(i).setAge(ages[population - 1 - i]);
+		for(int i = 0; i < POPULATION; ++i){
+			humans.get(i).setAge(ages[POPULATION - 1 - i]);
 		}
 	}
 	
