@@ -25,6 +25,7 @@ public class FamilyTree {
 	public static int POPULATION = 2000;
 	public static int MAX_OFFSPRING = 20;
 	public static int MIN_REPRODUCTIVE_AGE = 15;
+	public static int MAX_AGE = 100;
 	public static String NAME_FILEPATH = "US";
 	
 	////Class variables
@@ -161,7 +162,8 @@ public class FamilyTree {
 			
 			//Attempt to make a random amount of connections between the current
 			//node and the eligible children nodes.
-			for(int j = 0; j < rand.nextInt(MAX_OFFSPRING); ++j){
+			int maxOffspring = rand.nextInt(MAX_OFFSPRING);
+			for(int j = 0; j < maxOffspring; ++j){
 				//There's only one eligible unit left! Connect and stop.
 				if(eligibleChildren.size() == 1){
 					makeConnection(i, eligibleChildren.get(0));
@@ -233,8 +235,10 @@ public class FamilyTree {
 			switch(inputToken){
 			case "POPULATION:": POPULATION = s.nextInt(); break;
             case "FAMILIES:": FAMILIES = s.nextInt(); break;
-            case "OFFSPRING_MAX:": MAX_OFFSPRING = s.nextInt(); break;
+            case "MAX_OFFSPRING:": MAX_OFFSPRING = s.nextInt(); break;
+            case "MAX_AGE:": MAX_AGE = s.nextInt(); break;
             case "NAME_FILEPATH:": NAME_FILEPATH = s.next(); break;
+            case "MIN_REPRODUCTIVE_AGE:": MIN_REPRODUCTIVE_AGE = s.nextInt(); break;
             default: break;
 			}
 		}
@@ -275,15 +279,12 @@ public class FamilyTree {
 	 * This creates a distribution of ages and assigns them to the Human
 	 * objects.
 	 * 
-	 * TODO: Change 100 to a static final field, defined elsewhere. This is
-	 *       to simulate different age ranges.
-	 * 
 	 * @param population (int) defines how many ages to generate.
 	 */
 	private void ages(){
 		int ages[] = new int[POPULATION];
 		for(int i = 0; i < POPULATION; ++i){
-			ages[i] = rand.nextInt(100);
+			ages[i] = rand.nextInt(MAX_AGE + 1);
 			//ages[i] = (rand.nextGaussian()/3);
 		}
 		
