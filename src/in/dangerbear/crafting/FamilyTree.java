@@ -3,6 +3,8 @@
  */
 package in.dangerbear.crafting;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -42,6 +44,7 @@ public class FamilyTree {
 		humans = new ArrayList<Human>();
 		parser = new Parser();
 		
+		readConfig();
 		//Choose and parse name files.
 		parser.feedInput(NAME_FILEPATH, MALE);
 		parser.feedInput(NAME_FILEPATH, FEMALE);
@@ -229,20 +232,25 @@ public class FamilyTree {
 	 * 
 	 */
 	public static void readConfig(){
-		Scanner s = new Scanner("Configs/Genetics.build");
-		while(s.hasNext()){
-			String inputToken = s.next();
-			switch(inputToken){
-			case "POPULATION:": POPULATION = s.nextInt(); break;
-            case "FAMILIES:": FAMILIES = s.nextInt(); break;
-            case "MAX_OFFSPRING:": MAX_OFFSPRING = s.nextInt(); break;
-            case "MAX_AGE:": MAX_AGE = s.nextInt(); break;
-            case "NAME_FILEPATH:": NAME_FILEPATH = s.next(); break;
-            case "MIN_REPRODUCTIVE_AGE:": MIN_REPRODUCTIVE_AGE = s.nextInt(); break;
-            default: break;
+		File file = new File("Configs/Genetics.ini");
+		try{
+			Scanner s = new Scanner(file);
+			while(s.hasNext()){
+				String inputToken = s.next();
+				switch(inputToken){
+				case "POPULATION:": POPULATION = s.nextInt(); break;
+	            case "FAMILIES:": FAMILIES = s.nextInt(); break;
+	            case "MAX_OFFSPRING:": MAX_OFFSPRING = s.nextInt(); break;
+	            case "MAX_AGE:": MAX_AGE = s.nextInt(); break;
+	            case "NAME_FILEPATH:": NAME_FILEPATH = s.next(); break;
+	            case "MIN_REPRODUCTIVE_AGE:": MIN_REPRODUCTIVE_AGE = s.nextInt(); break;
+	            default: break;
+				}
 			}
+			s.close();
+		}catch(FileNotFoundException e){
+			e.printStackTrace();
 		}
-		s.close();
 	}
 
 
