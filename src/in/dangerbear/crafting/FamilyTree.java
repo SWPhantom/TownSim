@@ -18,7 +18,7 @@ public class FamilyTree {
 	////Statics
 	public final static int FEMALE = 1;
 	public final static int MALE = 0;
-	public final static int MIN_REPRORUCTIVE_AGE = 15;
+	public final static int MIN_REPRODUCTIVE_AGE = 15;
 	
 	////Class variables
 	ArrayList<Human> humans;
@@ -59,6 +59,10 @@ public class FamilyTree {
 		String tempFirstName;
 		
 		for(int i = 0; i < families; ++i){
+			//
+			// TODO: make sure last names don't repeat
+			// 
+			//  pop used last name from the list
 			tempLasts[i] = lasts.get(rand.nextInt(lasts.size()));
 		}
 		lasts.clear();
@@ -76,6 +80,7 @@ public class FamilyTree {
 		males.clear();
 		females.clear();
 		
+		//Generate the ages of the populace.
 		ages(people);
 	}
 	
@@ -86,27 +91,78 @@ public class FamilyTree {
 	 * this attempts to stop connections ASAP.
 	 * 
 	 * TODO: Transition to eligibility queues/lists.
+	 * TODO: maxOffspring should be a config-based variable.
 	 * 
 	 * @param maxOffspring (int) Uses this is a ceiling for the number of kids
 	 *        per human.
 	 */
 	public void interconnect(int maxOffspring) {
 		for(int i = 0; i < humans.size(); ++i){
-			for(int j = 0; j < rand.nextInt(maxOffspring); ++j){
-				boolean keepGoing = true;
-				int tempCounter = 0;
-				while(keepGoing){
-					int result = makeConnection(i, rand.nextInt(humans.size()));
-					if(result == -1 || result == 1){//If the parent is not eligible to be a parent OR there was a successful pairing.
-						keepGoing = false;
-					}
-					if(result == 0){//A single failure occurred
-						tempCounter++;
-					}
-					if(tempCounter == 50){//Too many failures
-						keepGoing = false;
-					}
+			Human parent = humans.get(i);
+			//Hit the lowest age. No one after this can have children. End!
+			if(parent.getAge() < MIN_REPRODUCTIVE_AGE){
+				return;
+			}
+			
+			//Set everything up to the current human's ID to false. They are all older.
+			eligibilityList1.clear();
+			eligibilityList1.set(i + 1, humans.size(), true);
+			
+			//Begin elimination of potential child connections.
+			for(int j = i; j < humans.size(); ++j){
+				Human child = humans.get(j);
+				
+				//Check for sameness.
+				if(i == j){
+					eligibilityList1.set(j, false);
 				}
+				//Check for age difference.
+				if(parent.getAge() - child.getAge() < MIN_REPRODUCTIVE_AGE){
+					eligibilityList1.set(j, false);
+				}
+				
+				//Check for name difference.
+				//TODO: Maybe throw in some randomness to this.
+				//	Some people can adopt?
+				if(!parent.getLastName().equals(child.getLastName())){
+					eligibilityList1.set(j, false);
+				}
+				
+				//Check for existing parenthood.
+				if(parent.getGender() == MALE && child.getFatherID() != -1){
+					eligibilityList1.set(j, false);
+				}
+				if(parent.getGender() == FEMALE && child.getMotherID() != -1){
+					eligibilityList1.set(j, false);
+				}
+			}
+			
+			//If no other humans are eligible, move onto the next potential parent.
+			if(eligibilityList1.cardinality() <= 0){
+				continue;
+			}
+			
+			//Create the list of ids of eligible chilren.
+			ArrayList<Integer> eligibleChildren = new ArrayList<Integer>();
+			for(int j = i; j < eligibilityList1.size(); ++j){
+				if(eligibilityList1.get(j)){
+					eligibleChildren.add(j);
+				}
+			}
+			
+			//Attempt to make a random amount of connections between the current
+			//node and the eligible children nodes.
+			for(int j = 0; j < rand.nextInt(maxOffspring); ++j){
+				//There's only one eligible unit left! Connect and stop.
+				if(eligibleChildren.size() == 1){
+					makeConnection(i, eligibleChildren.get(0));
+					break;
+				}
+				
+				//Connect the ith person and someone from their eligible list.
+				int index = rand.nextInt(eligibleChildren.size());
+				makeConnection(i, eligibleChildren.get(index));
+				eligibleChildren.remove(index);
 			}
 		}
 	}
@@ -147,7 +203,7 @@ public class FamilyTree {
 	 * @param n
 	 */
 	public void printNthConnections(int humanID, int n){
-		System.out.println("Printing " + humanID + "th " + n + "connections.");
+		System.out.println("Printing " + humans.get(humanID).firstName + " " + humans.get(humanID).lastName + "'s " + n + "connections.");
 		ArrayList<Integer> outputList = this.nthConnections(humanID, n);
 		
 		for(Integer i: outputList){
@@ -161,34 +217,18 @@ public class FamilyTree {
 	
 	/**
 	 * Method makeConnection
-	 * Checks to see if the parent and child candidates are eligible for 
-	 * pairing.
-	 *  If not, return a non-'1' int. the caller function uses the return for
-	 * action.
-	 *  If so, connect both Humans via parentID and childID fields and
-	 * return 1.
-	 * 
-	 * TODO: Transition to eligibility queues/lists.
+	 * Connects the parent and child nodes, according to parameter IDs.
+	 * Makes sure the genders match on the parent connections.
 	 * 
 	 * @param parent (int) referencing the ID number of parent.
 	 * @param child (int) referencing the ID number of child.
-	 * @return (int) The following is what the caller function knows:
-	 * 				-1: Failure: End attempts to connect these two now.
-	 * 				 0: Failure: Try to attempt connections again.
-	 * 				 1: Success: End attempts to connect these two now.
+	 * @return (int)  0: Failure.
+	 * 				  1: Success.
 	 */
 	private int makeConnection(int parent, int child) {
-		boolean fatherless = humans.get(child).getFatherID() == -1;
-		boolean motherless = humans.get(child).getMotherID() == -1;
 		int parentGender = humans.get(parent).getGender();
 		
-		//If the parent is not of eligible reproductive age, terminate now.
-		if(humans.get(parent).getAge() < MIN_REPRORUCTIVE_AGE){
-			return -1;
-		}
-		if((!motherless && !fatherless) || (!fatherless && parentGender == MALE) || (!motherless && parentGender == FEMALE)){
-			return 0;
-		}else if(parentGender == MALE){
+		if(parentGender == MALE){
 			humans.get(child).setFatherID(parent);
 			humans.get(parent).addChild(child);
 			return 1;
