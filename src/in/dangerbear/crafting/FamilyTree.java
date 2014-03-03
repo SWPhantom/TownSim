@@ -217,7 +217,7 @@ public class FamilyTree {
 	 * @param n
 	 */
 	public void printNthConnections(int humanID, int n){
-		System.out.println("Printing " + humans.get(humanID).firstName + " " + humans.get(humanID).lastName + "'s " + n + "connections.");
+		System.out.println("Printing " + humans.get(humanID).getName() + "'s " + n + "connections.");
 		ArrayList<Integer> outputList = this.nthConnections(humanID, n);
 		
 		for(Integer i: outputList){
@@ -225,6 +225,20 @@ public class FamilyTree {
 		}
 		System.out.println();
 	}
+	
+	/**
+	 * Method hasPath
+	 * 
+	 * 
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public boolean hasPath(int source, int target){
+		eligibilityList1.clear();
+		return hasPathHelper(source, target);
+	}
+	
 	
 	/**
 	 * Method readConfig
@@ -255,6 +269,29 @@ public class FamilyTree {
 
 
 	////Helpers
+	
+	private boolean hasPathHelper(int source, int target){
+		//I've been here before. No good.
+		if(eligibilityList1.get(source) == true){
+			return false;
+		}
+		//Make sure not to come here again.
+		eligibilityList1.set(source, true);
+		
+		//If this has happened upon the target, we're done!
+		if(source == target){
+			return true;
+		}
+		
+		//Start checking the parents and the children.
+		Human a = humans.get(source);
+		if(a.getMotherID() != -1 && hasPathHelper(a.getMotherID(), target)) return true;
+		if(a.getFatherID() != -1 && hasPathHelper(a.getFatherID(), target)) return true;
+		for(int i = 0; i < a.getNumChildren(); ++i){
+			if(hasPathHelper(a.getChildren().get(i), target)) return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Method makeConnection
@@ -384,6 +421,22 @@ public class FamilyTree {
 				}
 			}
 			System.out.println();
+		}
+	}
+	
+	public void DEBUG_CONNECTIONS_PRINT(int tests){
+		System.out.println("Making many random connection queries:");
+		int a;
+		int b;
+		for(int i = 0; i < tests; ++i){
+			a = rand.nextInt(humans.size());
+			b = rand.nextInt(humans.size());
+			System.out.print("Are " + humans.get(a).getName() + " and " + humans.get(b).getName() + " connected? ");
+			if(hasPath(a, b)){
+				System.out.println("Yes");
+			}else{
+				System.out.println("No");
+			}
 		}
 	}
 

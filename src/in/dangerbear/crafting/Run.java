@@ -21,6 +21,8 @@ public class Run {
 		
 		tree.DEBUG_PRINT();
 		
+		tree.DEBUG_CONNECTIONS_PRINT(50);
+		
 	}
 	
 }
