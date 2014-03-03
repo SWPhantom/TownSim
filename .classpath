@@ -3,5 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/prefuse.jar"/>
+	<classpathentry kind="lib" path="libs/jgrapht-core-0.9.0.jar"/>
+	<classpathentry kind="lib" path="libs/jgraph-5.13.0.0.jar"/>
+	<classpathentry kind="lib" path="libs/jgrapht-ext-0.9.0.jar"/>
+	<classpathentry kind="lib" path="libs/jgrapht-demo-0.9.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
