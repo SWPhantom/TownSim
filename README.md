@@ -38,42 +38,52 @@ crimes in the presence of deafmute orphans, rather than in the constable's offic
 ##### Eclipse
 1. Download the project files.
 2. Import the project into Eclipse.
-3. Done!
+3. Download JgraphT from http://jgrapht.org/
+4. Include the .Jar files you downloaded in your Eclipse project.
+5. Run!
 
 ##### Command Line
 TBA
 
 #### Usage:
 The Main() function is in the Run.java file.
-There, you can change the following variables to modify the NPCs generated:
-```Java
-public final static int FAMILIES = 5; 
-public final static int POPULATION = 20;
-public final static int OFFSPRING_MAX = 20;
-public final static String NAME_FILEPATH = "Names/Italy";
-```
+The configuration files in the `Configs` folder will generate a population to your specifications:
 
-__These will be moved away from the java source code and put into an external config
-file for easier editing.__
+Genetics.ini sample. 
+	FAMILIES: 7					//Number of families to generate.
+	POPULATION: 200				//Total number of people to generate.
+	MAX_OFFSPRING: 5			//Maximum number of offspring each human can have.
+	MIN_REPRODUCTIVE_AGE: 30	//Minimum age difference between a parent/child pair and the minimum age to be eligible to have a child.
+	NAME_FILEPATH: SSQCH		//Name modules to use. Can be 'Italy', 'NorthAfrica', 'SouthEast', 'US', and 'SSQCH'.
+	MAX_AGE: 80					//Maximum age to create when generating the people.
 
-Depending on where you run this application, you may need to play around with the `Name` folder
-placement. 
+
+
+Depending on where you run this application, you may need to play around with the `Name` and `Configs` folder
+placements. 
 
 ### Features:
 Planned
 ~~Implemented~~
 
-Phase I: Static NPC Generation
+Phase I: Static NPC Generation - making a snapshot of a populace.
 
 * Part A: Biological Systems
   	* Simple 
     	* ~~Name.~~
     	* ~~Age.~~
     	* ~~Gender.~~
-    	* Family Lines. - `50%`
+    	* Family Lines. - `70%`
   	* Defined
     	* Age Distributions.
     	* Gender Distributions.
       
-*Procedural NPC Generation
-  
+* Part B: Social Systems
+	* Lineage.
+	* Friendship.
+
+	
+Phase II: Procedural Populations - make discrete changes to the populace.
+	* Birth/Death.
+	* Family cluster linking.
+	
