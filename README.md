@@ -50,12 +50,12 @@ The Main() function is in the Run.java file.
 The configuration files in the `Configs` folder will generate a population to your specifications:
 
 Genetics.ini sample. 
-	FAMILIES: 7					//Number of families to generate.
-	POPULATION: 200				//Total number of people to generate.
-	MAX_OFFSPRING: 5			//Maximum number of offspring each human can have.
-	MIN_REPRODUCTIVE_AGE: 30	//Minimum age difference between a parent/child pair and the minimum age to be eligible to have a child.
-	NAME_FILEPATH: SSQCH		//Name modules to use. Can be 'Italy', 'NorthAfrica', 'SouthEast', 'US', and 'SSQCH'.
-	MAX_AGE: 80					//Maximum age to create when generating the people.
+	'FAMILIES: 7					//Number of families to generate.'
+	'POPULATION: 200				//Total number of people to generate.'
+	'MAX_OFFSPRING: 5				//Maximum number of offspring each human can have.'
+	'MIN_REPRODUCTIVE_AGE: 30		//Minimum age difference between a parent/child pair and the minimum age to be eligible to have a child.'
+	'NAME_FILEPATH: SSQCH			//Name modules to use. Can be 'Italy', 'NorthAfrica', 'SouthEast', 'US', and 'SSQCH'.'
+	'MAX_AGE: 80					//Maximum age to create when generating the people.'
 
 
 
@@ -81,7 +81,8 @@ Phase I: Static NPC Generation - making a snapshot of a populace.
 * Part B: Social Systems
 	* Lineage.
 	* Friendship.
-
+* Part C: Extras
+	* Database integration.
 	
 Phase II: Procedural Populations - make discrete changes to the populace.
 	* Birth/Death.
