@@ -455,7 +455,7 @@ public class FamilyTree {
 				for (int j = 0; j < humans.get(i).getNumChildren(); ++j) {
 					System.out.println("  "
 							+ humans.get(humans.get(i).children.get(j))
-									.getName());
+									.getName() + "(" + humans.get(humans.get(i).children.get(j)).getAge() + ")");
 				}
 			}
 			System.out.println();
