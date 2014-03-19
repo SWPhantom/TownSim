@@ -106,17 +106,41 @@ public class FamilyTree {
 
 		// Generate the ages of the populace.
 		ages();
-		interconnect();
+		interconnectGenetically();
+		interconnectSocially();
 	}
 
 	/**
-	 * Method interconnect
+	 * Method interconnectSocially
+	 * Connects the humans randomly.
+	 * TODO: Change to use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total population.)
+	 * 
+	 */
+	private void interconnectSocially(){
+		
+		for(int i = 0; i < humans.size(); ++i){
+			int maxConnections = rand.nextInt(humans.size()/10); //20 should be MAX_SOCIAL_CLUSTER_SIZE
+			//create an array that stores unique connections. Protects against redundancy later.
+			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
+			for(int j = 0; j < maxConnections; ++j){
+				int choice = i;
+				while(choice == i){
+					i = rand.nextInt(humans.size());
+				}
+				
+			}
+			
+		}
+	}
+	
+	/**
+	 * Method interconnectGenetically
 	 * Starts attempting to create parent/child connections
 	 * for every Human. Using the value returned by helper function
 	 * makeConnection, this attempts to stop connections ASAP.
 	 * 
 	 */
-	private void interconnect() {
+	private void interconnectGenetically() {
 		for (int i = 0; i < humans.size(); ++i) {
 			Human parent = humans.get(i);
 			// Hit the lowest age. No one after this can have children. End!
@@ -143,10 +167,13 @@ public class FamilyTree {
 				}
 
 				// Check for name difference.
-				// TODO: Maybe throw in some randomness to this.
+				// TODO: This should be altered by a ADOPTION_PROBABILITY input.
 				// Some people can adopt?
 				if (!parent.getLastName().equals(child.getLastName())) {
-					eligibilityList1.set(j, false);
+					//Adoption eligibility
+					if(rand.nextInt(100) < 80){//80 should be ADOPTION_PROBABILITY
+						eligibilityList1.set(j, false);
+					}
 				}
 
 				// Check for existing parenthood.
@@ -179,13 +206,13 @@ public class FamilyTree {
 			for (int j = 0; j < maxOffspring; ++j) {
 				// There's only one eligible unit left! Connect and stop.
 				if (eligibleChildren.size() == 1) {
-					makeConnection(i, eligibleChildren.get(0));
+					makeGeneticConnection(i, eligibleChildren.get(0));
 					break;
 				}
 
 				// Connect the ith person and someone from their eligible list.
 				int index = rand.nextInt(eligibleChildren.size());
-				makeConnection(i, eligibleChildren.get(index));
+				makeGeneticConnection(i, eligibleChildren.get(index));
 				eligibleChildren.remove(index);
 			}
 		}
@@ -336,7 +363,7 @@ public class FamilyTree {
 	 *            (int) referencing the ID number of child.
 	 * @return (int) 0: Failure. 1: Success.
 	 */
-	private int makeConnection(int parent, int child) {
+	private int makeGeneticConnection(int parent, int child) {
 		int parentGender = humans.get(parent).getGender();
 
 		if (parentGender == MALE) {
@@ -349,6 +376,20 @@ public class FamilyTree {
 			return 1;
 		}
 		return 0;
+	}
+	
+	/**
+	 * Method makeRelationshipConnection
+	 * TODO: Make a reasonable relationship generator. Based on family/owing money/etc.
+	 * 
+	 * @param a (int) Represents some human by id.
+	 * @param b (int) Represents some human by id.
+	 * @return (int) 0: Failure. 1: Success.
+	 */
+	private int makeRelationshipConnection(int a, int b){
+		humans.get(a).addRelationship(b);
+		humans.get(b).addRelationship(a);
+		return 1;
 	}
 
 	/**

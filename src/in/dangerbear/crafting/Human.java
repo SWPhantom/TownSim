@@ -20,6 +20,7 @@ public class Human extends Node {
 	public int fatherID = -1;
 	public int motherID = -1;
 	public ArrayList<Integer> children;
+	public ArrayList<Integer> relations;
 	
 	
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
@@ -116,6 +117,11 @@ public class Human extends Node {
 	
 	public void addChild(int childID) {
 		children.add(childID);
+	}
+	
+	public void addRelationship(int humanID) {
+		relations.add(humanID);
+		
 	}
 
 	public void setLastName(String lastName) {
