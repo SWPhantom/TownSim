@@ -1,7 +1,6 @@
 package in.dangerbear.crafting;
 
-import com.mxgraph.layout.*;
-import com.mxgraph.swing.*;
+
 
 import java.awt.*;
 
@@ -10,6 +9,9 @@ import javax.swing.*;
 import org.jgrapht.*;
 import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
+
+import com.mxgraph.layout.mxFastOrganicLayout;
+import com.mxgraph.swing.mxGraphComponent;
 
 public class Run extends JApplet {
 	private static final long serialVersionUID = 2202072534703043194L;
@@ -35,10 +37,10 @@ public class Run extends JApplet {
 
 		tree.DEBUG_PRINT();
 
-		tree.DEBUG_CONNECTIONS_PRINT(50);
+		
 
 		// Graph segment.
-		Run applet = new Run();
+		/*Run applet = new Run();
 		applet.init();
 
 		JFrame frame = new JFrame();
@@ -47,6 +49,7 @@ public class Run extends JApplet {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+		*/
 	}
 
 	public void init() {

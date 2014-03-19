@@ -82,10 +82,12 @@ public class FamilyTree {
 
 		for (int i = 0; i < FAMILIES; ++i) {
 			//
-			// TODO: make sure last names don't repeat
+			// TODO: Implement a less costly no-repeat functionality.
 			//
 			// pop used last name from the list
-			tempLasts[i] = lasts.get(rand.nextInt(lasts.size()));
+			int choice = rand.nextInt(lasts.size());
+			tempLasts[i] = lasts.get(choice);
+			lasts.remove(choice);
 		}
 		lasts.clear();
 
