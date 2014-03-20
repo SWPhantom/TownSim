@@ -81,10 +81,7 @@ public class FamilyTree {
 		String tempFirstName;
 
 		for (int i = 0; i < FAMILIES; ++i) {
-			//
 			// TODO: Implement a less costly no-repeat functionality.
-			//
-			// pop used last name from the list
 			int choice = rand.nextInt(lasts.size());
 			tempLasts[i] = lasts.get(choice);
 			lasts.remove(choice);
@@ -122,14 +119,36 @@ public class FamilyTree {
 			int maxConnections = rand.nextInt(humans.size()/10); //20 should be MAX_SOCIAL_CLUSTER_SIZE
 			//create an array that stores unique connections. Protects against redundancy later.
 			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
-			for(int j = 0; j < maxConnections; ++j){
-				int choice = i;
-				while(choice == i){
-					i = rand.nextInt(humans.size());
-				}
-				
+			interconnectSociallyHelper(madeConnections, maxConnections, i);
+			for(int j = 0; j < madeConnections.size(); ++j){
+				makeRelationshipConnection(i, madeConnections.get(j));
 			}
+		}
+	}
+	
+	/**
+	 * Method interconnectSociallyHelper
+	 * TODO: Potential problem with this never finding a valid ID.
+	 * Need to rethink this later, especially with small populations.
+	 * 
+	 * @param uniques
+	 * @param maxConnections
+	 * @param sourceID
+	 */
+	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
+		int i = 0;
+		int target = -1;
+		while(i < maxConnections){
+			//Generate potential connection ID
+			target = rand.nextInt(humans.size());
 			
+			//Check for validity.
+			if(target == sourceID) continue;
+			if(humans.get(sourceID).hasRelationship(target)) continue;
+			
+			//Target has passed the gauntlet. Add to uniques arraylist.
+			uniques.add(target);
+			++i;
 		}
 	}
 	

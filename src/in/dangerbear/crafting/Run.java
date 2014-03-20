@@ -56,27 +56,29 @@ public class Run extends JApplet {
 		// create a JGraphT graph
 		ListenableGraph<String, DefaultEdge> g = new ListenableDirectedGraph<String, DefaultEdge>(
 				DefaultEdge.class);
-
+		
 		// create a visualization using JGraph, via an adapter
 		jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
 
 		getContentPane().add(new mxGraphComponent(jgxAdapter));
 		resize(DEFAULT_SIZE);
+		//graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
 		
 		for (int i = 0; i < tree.humans.size(); ++i) {
-			g.addVertex(tree.humans.get(i).getFirstName());
+			g.addVertex(tree.humans.get(i).getName());
 		}
 
 		for (int i = 0; i < tree.humans.size(); ++i) {
-			for (int j = 0; j < tree.humans.get(i).getNumChildren(); ++j) {
-				Human a = tree.humans.get(i);
-				g.addEdge(a.getFirstName(), tree.humans.get(a.children.get(j))
-						.getFirstName());
+			Human a = tree.humans.get(i);
+			for (int j = 0; j < a.relations.size(); ++j) {
+				g.addEdge(a.getName(), tree.humans.get(a.relations.get(j))
+						.getName());
 			}
 		}
 
 		// positioning via jgraphx layouts
 		mxFastOrganicLayout layout = new mxFastOrganicLayout(jgxAdapter);
+		layout.setDisableEdgeStyle(true);
 		layout.execute(jgxAdapter.getDefaultParent());
 	}
 
