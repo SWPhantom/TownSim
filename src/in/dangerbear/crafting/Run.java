@@ -1,5 +1,6 @@
 package in.dangerbear.crafting;
 
+
 //import com.mxgraph.layout.*;
 //import com.mxgraph.swing.*;
 //
@@ -15,6 +16,7 @@ public class Run{ //extends JApplet {
 //	private static final long serialVersionUID = 2202072534703043194L;
 //	private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
 //	private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
+
 
 	public static FamilyTree tree = new FamilyTree();
 
@@ -34,10 +36,10 @@ public class Run{ //extends JApplet {
 		tree.printNthConnections(2, 3);
 
 		tree.DEBUG_PRINT();
-
-		tree.DEBUG_CONNECTIONS_PRINT(50);
+	}
 
 		// Graph segment.
+
 //		Run applet = new Run();
 //		applet.init();
 //
@@ -47,7 +49,7 @@ public class Run{ //extends JApplet {
 //		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.pack();
 //		frame.setVisible(true);
-	}
+
 
 //	public void init() {
 //		// create a JGraphT graph

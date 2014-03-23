@@ -20,6 +20,7 @@ public class Human extends Node {
 	public int fatherID = -1;
 	public int motherID = -1;
 	public ArrayList<Integer> children;
+	public ArrayList<Integer> relations;
 	
 	
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
@@ -38,6 +39,7 @@ public class Human extends Node {
 		this.firstName = firstName;
 		this.gender = gender;
 		children = new ArrayList<Integer>();
+		relations = new ArrayList<Integer>();
 	}
 	
 	/**
@@ -47,6 +49,7 @@ public class Human extends Node {
 		super();
 		this.lastName = lastName;
 		children = new ArrayList<Integer>();
+		relations = new ArrayList<Integer>();
 	}
 	
 	
@@ -105,6 +108,13 @@ public class Human extends Node {
 		}
 		return output;
 	}
+	
+	public boolean hasRelationship(int target) {
+		for(int i = 0; i < relations.size(); ++i){
+			if(relations.get(i) == target) return true;
+		}
+		return false;
+	}
 
 	public void setFatherID(int fatherID) {
 		this.fatherID = fatherID;
@@ -116,6 +126,11 @@ public class Human extends Node {
 	
 	public void addChild(int childID) {
 		children.add(childID);
+	}
+	
+	public void addRelationship(int humanID) {
+		relations.add(humanID);
+		
 	}
 
 	public void setLastName(String lastName) {
@@ -134,4 +149,6 @@ public class Human extends Node {
 	public String toString() {
 		return "Human [lastName=" + lastName + ", firstName=" + firstName + "]";
 	}
+
+	
 }
