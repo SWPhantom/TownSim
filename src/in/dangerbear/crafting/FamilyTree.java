@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author SWPhantom
@@ -33,6 +35,7 @@ public class FamilyTree {
 	////Class variables
 	ArrayList<Human> humans;
 	BitSet eligibilityList1;
+	BitSet eligibilityList2;
 	ArrayList<String> males;
 	ArrayList<String> females;
 	ArrayList<String> lasts;
@@ -105,6 +108,71 @@ public class FamilyTree {
 		ages();
 		interconnectGenetically();
 		interconnectSocially();
+	}
+	
+	/**
+	 * Method startRumor
+	 * Gets an initial population of infected IDs and tries to infect all
+	 * neighboring nodes.
+	 * 
+	 * TODO: Change this to be more API-like. Consider returning an ArrayList
+	 * or the percentage of infection.
+	 * 
+	 * @param initialVectors
+	 * @param infectionProbability
+	 */
+	public void startRumor(ArrayList<Integer> initialVectors, int infectionProbability){
+		int totalInfected = initialVectors.size();
+		//Create a queue to keep track of who is to try infecting.
+		Queue<Integer> infectionOrder = new ConcurrentLinkedQueue<Integer>();
+		
+		//List of people that are infected.
+		eligibilityList1.clear();
+		for(int i = 0; i < initialVectors.size(); ++i){
+			eligibilityList1.set(initialVectors.get(i));
+			infectionOrder.add(initialVectors.get(i));
+		}
+		
+		//XXX: Could have an issue with infinite loop if not careful. Check.
+		while(!infectionOrder.isEmpty()){
+			int infectorID = infectionOrder.remove();
+			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
+			for(int i = 0; i < infectorConnections.size(); ++i){
+				boolean infected = startRumorHelper(infectorID, infectorConnections.get(i), infectionProbability);
+				if(infected){
+					infectionOrder.add(infectorConnections.get(i));
+					++totalInfected;
+				}
+			}
+		}
+		
+		//Check the percentage of infection.
+		double percent = 100.00 * (double)totalInfected / (double)humans.size();
+		System.out.println("Infection analysis: " + totalInfected + "/" + humans.size() +"(" + percent + "%)");
+		
+		
+	}
+
+	/**
+	 * Method startRumorHelper
+	 * TODO: The reason this takes in infectorID is to determine connection-specific
+	 * infection probability (how much the pair of people like each other, etc).
+	 * 
+	 * @param infectorID
+	 * @param targetID
+	 * @param infectionProbability
+	 * @return
+	 */
+	private boolean startRumorHelper(int infectorID, int targetID, int infectionProbability){
+		//Check to see if the target is already infected.
+		if(eligibilityList1.get(targetID)) return false;
+		
+		//Not infected already. See if infection occurs.
+		if(rand.nextInt(100) >= infectionProbability) return false;
+		
+		//Infection has occurred. Add to the infected list.
+		eligibilityList1.set(targetID);
+		return true;
 	}
 
 	/**

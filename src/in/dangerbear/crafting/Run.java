@@ -1,5 +1,8 @@
 package in.dangerbear.crafting;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 
 //import com.mxgraph.layout.*;
 //import com.mxgraph.swing.*;
@@ -36,6 +39,44 @@ public class Run{ //extends JApplet {
 		tree.printNthConnections(2, 3);
 
 		tree.DEBUG_PRINT();
+		
+		//Rumor spreading tests.
+		ArrayList<Integer> vectors = new ArrayList<Integer>();
+		int TESTS = 5;
+		Random rand = new Random();
+		for(int i = 0; i < TESTS; ++i){
+			vectors.clear();
+			int initVecs = rand.nextInt(tree.humans.size()/10); //MAXIMUM OF 10% OF THE POPULATION.
+			System.out.println("Initial rumor vectors (" + initVecs + "): ");
+			//XXX: This may add the same rumor vector to the ArrayList. NO GOOD.
+			for(int j = 0; j < initVecs; ++j){
+				int choice = rand.nextInt(tree.humans.size());
+				vectors.add(choice);
+				System.out.print(choice + ", ");
+			}
+			System.out.println();
+			System.out.println("1% chance to propagate.");
+			tree.startRumor(vectors, 1);
+			System.out.println("2% chance to propagate.");
+			tree.startRumor(vectors, 2);
+			System.out.println("4% chance to propagate.");
+			tree.startRumor(vectors, 4);
+			System.out.println("5 chance to propagate.");
+			tree.startRumor(vectors, 5);
+			System.out.println("10 chance to propagate.");
+			tree.startRumor(vectors, 10);
+			System.out.println("20% chance to propagate.");
+			tree.startRumor(vectors, 20);
+			System.out.println("30% chance to propagate.");
+			tree.startRumor(vectors, 30);
+			System.out.println("40% chance to propagate.");
+			tree.startRumor(vectors, 40);
+			System.out.println("50% chance to propagate.");
+			tree.startRumor(vectors, 50);
+			System.out.println("60% chance to propagate.");
+			tree.startRumor(vectors, 60);
+			System.out.println();
+		}
 	}
 
 		// Graph segment.

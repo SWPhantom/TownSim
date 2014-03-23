@@ -90,6 +90,10 @@ public class Human extends Node {
 		return children.size();
 	}
 	
+	public ArrayList<Integer> getSocialConnections(){
+		return relations;
+	}
+	
 	public int getAge() {
 		return age;
 	}
