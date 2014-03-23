@@ -53,7 +53,7 @@ public class FamilyTree {
 	}
 
 ////METHODS////////////////////////////////////////////////////////////////////
-
+	
 	/**
 	 * Method generate
 	 * Generates the eligible last names and the Humans
@@ -123,32 +123,6 @@ public class FamilyTree {
 			for(int j = 0; j < madeConnections.size(); ++j){
 				makeRelationshipConnection(i, madeConnections.get(j));
 			}
-		}
-	}
-	
-	/**
-	 * Method interconnectSociallyHelper
-	 * TODO: Potential problem with this never finding a valid ID.
-	 * Need to rethink this later, especially with small populations.
-	 * 
-	 * @param uniques
-	 * @param maxConnections
-	 * @param sourceID
-	 */
-	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
-		int i = 0;
-		int target = -1;
-		while(i < maxConnections){
-			//Generate potential connection ID
-			target = rand.nextInt(humans.size());
-			
-			//Check for validity.
-			if(target == sourceID) continue;
-			if(humans.get(sourceID).hasRelationship(target)) continue;
-			
-			//Target has passed the gauntlet. Add to uniques arraylist.
-			uniques.add(target);
-			++i;
 		}
 	}
 	
@@ -398,6 +372,33 @@ public class FamilyTree {
 	}
 	
 	/**
+	 * Method interconnectSociallyHelper
+	 * TODO: Potential problem with this never finding a valid ID.
+	 * Need to rethink this later, especially with small populations.
+	 * 
+	 * @param uniques
+	 * @param maxConnections
+	 * @param sourceID
+	 */
+	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
+		int i = 0;
+		int target = -1;
+		while(i < maxConnections){
+			//Generate potential connection ID
+			target = rand.nextInt(humans.size());
+			
+			//Check for validity.
+			if(target == sourceID) continue;
+			if(humans.get(sourceID).hasRelationship(target)) continue;
+			
+			//Target has passed the gauntlet. Add to uniques arraylist.
+			uniques.add(target);
+			++i;
+		}
+	}
+	
+	
+	/**
 	 * Method makeRelationshipConnection
 	 * TODO: Make a reasonable relationship generator. Based on family/owing money/etc.
 	 * 
@@ -500,11 +501,11 @@ public class FamilyTree {
 	 * 
 	 * Brighinzone Stranbii(90)
 	 *  Children:
-	 *   Baccone de Calce
-	 *   Giollius de Calce
-	 *   Giovanna de Calce
-	 *   Cambius Simonis
-	 *   Berardus Doberti
+	 *   Baccone de Calce (80)
+	 *   Giollius de Calce (80)
+	 *   Giovanna de Calce (23)
+	 *   Cambius Simonis (23)
+	 *   Berardus Doberti (43)
 	 * 
 	 * Cambius Simonis(88)
 	 */
