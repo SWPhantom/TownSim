@@ -1,6 +1,8 @@
 package in.dangerbear.crafting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -58,9 +60,25 @@ public class Run{ //extends JApplet {
 			for(int j = 0; j < initVecs; ++j){
 				int choice = rand.nextInt(tree.humans.size());
 				vectors.add(choice);
-				System.out.print(choice + ", ");
 			}
+			
+			//Sort the vectors.
+			Collections.sort(vectors);
+			
+			//Remove duplicates.
+			for(int j = 0; j < vectors.size() - 1; ++j){
+				while(vectors.get(j) == vectors.get(j + 1) && (j + 1) != vectors.size()){
+					vectors.remove(j + 1);
+				}
+			}
+			
+			for(int j = 0; j < vectors.size(); ++j){
+				System.out.print(vectors.get(j) + ", ");
+			}
+			
 			System.out.println();
+			//System.out.println("0% chance to propagate.");
+			//tree.startRumor(vectors, 0);
 			System.out.println("1% chance to propagate.");
 			tree.startRumor(vectors, 1);
 			System.out.println("2% chance to propagate.");

@@ -141,6 +141,7 @@ public class FamilyTree {
 		}
 		
 		//XXX: Could have an issue with infinite loop if not careful. Check.
+		//XXX: Issue with this section. Returns a greater totalInfected than there is population.
 		while(!infectionOrder.isEmpty()){
 			int infectorID = infectionOrder.remove();
 			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
@@ -189,9 +190,8 @@ public class FamilyTree {
 	 * 
 	 */
 	private void interconnectSocially(){
-		
 		for(int i = 0; i < humans.size(); ++i){
-			int maxConnections = rand.nextInt(humans.size()/10); //20 should be MAX_SOCIAL_CLUSTER_SIZE
+			int maxConnections = rand.nextInt(20); //20 should be MAX_SOCIAL_CLUSTER_SIZE
 			//create an array that stores unique connections. Protects against redundancy later.
 			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
 			interconnectSociallyHelper(madeConnections, maxConnections, i);
