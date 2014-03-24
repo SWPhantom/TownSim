@@ -2,6 +2,7 @@ package in.dangerbear.crafting;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 
 //import com.mxgraph.layout.*;
@@ -25,6 +26,11 @@ public class Run{ //extends JApplet {
 
 	public static void main(String[] args) {
 		// Generation segment.
+		System.out.println("Press Enter when you want to start.");
+		Scanner key = new Scanner(System.in);
+		key.next();
+		key.close();
+		System.out.println("Starting to generate the population.");
 		tree.generate();
 
 		// Output data of generated populace.

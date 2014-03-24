@@ -31,6 +31,8 @@ public class FamilyTree {
 	public static int MIN_REPRODUCTIVE_AGE = 15;
 	public static int MAX_AGE = 100;
 	public static String NAME_FILEPATH = "US";
+	
+	private static final boolean DEBUG = true;
 
 	////Class variables
 	ArrayList<Human> humans;
@@ -74,6 +76,7 @@ public class FamilyTree {
 	 *            (ArrayList<String>) List of last names.
 	 */
 	public void generate() {
+		dp("DEBUG : In the generate function.");
 		this.males = parser.getNameList(MALE);
 		this.females = parser.getNameList(FEMALE);
 		this.lasts = parser.getNameList(LAST);
@@ -83,6 +86,7 @@ public class FamilyTree {
 		String tempLastName;
 		String tempFirstName;
 
+		dp("Making families.");
 		for (int i = 0; i < FAMILIES; ++i) {
 			// TODO: Implement a less costly no-repeat functionality.
 			int choice = rand.nextInt(lasts.size());
@@ -105,8 +109,11 @@ public class FamilyTree {
 		females.clear();
 
 		// Generate the ages of the populace.
+		dp("DEBUG : Generating ages.");
 		ages();
+		dp("DEBUG : Making genetic interconnections.");
 		interconnectGenetically();
+		dp("DEBUG : Making social interconnections.");
 		interconnectSocially();
 	}
 	
@@ -613,6 +620,12 @@ public class FamilyTree {
 			} else {
 				System.out.println("No");
 			}
+		}
+	}
+	
+	private void dp(String input){
+		if(DEBUG){
+			System.out.println(input);
 		}
 	}
 
