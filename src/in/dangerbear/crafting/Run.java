@@ -5,23 +5,31 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
+/*
+import java.util.HashMap;
+import java.util.Map;
+ 
+import com.mxgraph.layout.*;
+import com.mxgraph.swing.*;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.view.mxStylesheet;
 
-//import com.mxgraph.layout.*;
-//import com.mxgraph.swing.*;
-//
-//import java.awt.*;
-//
-//import javax.swing.*;
-//
-//import org.jgrapht.*;
-//import org.jgrapht.ext.*;
-//import org.jgrapht.graph.*;
+import java.awt.*;
 
+import javax.swing.*;
+
+import org.jgrapht.*;
+import org.jgrapht.ext.*;
+import org.jgrapht.graph.*;
+import org.jgraph.graph.GraphLayoutCache;
+
+*/
 public class Run{ //extends JApplet {
-//	private static final long serialVersionUID = 2202072534703043194L;
-//	private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
-//	private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
-
+	/*
+	private static final long serialVersionUID = 2202072534703043194L;
+	private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
+	private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
+	 */
 
 	public static FamilyTree tree = new FamilyTree();
 
@@ -76,9 +84,7 @@ public class Run{ //extends JApplet {
 			}
 			
 			System.out.println();
-			//System.out.println("0% chance to propagate.");
-			//tree.startRumor(vectors, 0);
-			System.out.println("1% chance to propagate.");
+			/*System.out.println("1% chance to propagate.");
 			tree.startRumor(vectors, 1);
 			System.out.println("2% chance to propagate.");
 			tree.startRumor(vectors, 2);
@@ -99,48 +105,65 @@ public class Run{ //extends JApplet {
 			System.out.println("60% chance to propagate.");
 			tree.startRumor(vectors, 60);
 			System.out.println();
+			*/
+
+		
 		}
+		
+		/*
+		// Graph segment.
+		Run applet = new Run();
+		applet.init();
+
+		JFrame frame = new JFrame();
+		frame.getContentPane().add(applet);
+		frame.setTitle("JGraphT Adapter to JGraph Demo");
+		frame.setSize(800, 800);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		*/
 	}
 
-		// Graph segment.
+	/*public void init() {
+		// create a JGraphT graph
+		ListenableGraph<String, DefaultEdge> g = new ListenableDirectedGraph<String, DefaultEdge>(
+				DefaultEdge.class);
 
-//		Run applet = new Run();
-//		applet.init();
-//
-//		JFrame frame = new JFrame();
-//		frame.getContentPane().add(applet);
-//		frame.setTitle("JGraphT Adapter to JGraph Demo");
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.pack();
-//		frame.setVisible(true);
+		// create a visualization using JGraph, via an adapter
+		jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
 
+		getContentPane().add(new mxGraphComponent(jgxAdapter));
+		resize(DEFAULT_SIZE);
+		
+		for (int i = 0; i < tree.humans.size(); ++i) {
+			g.addVertex(tree.humans.get(i).getName());
+		}
 
-//	public void init() {
-//		// create a JGraphT graph
-//		ListenableGraph<String, DefaultEdge> g = new ListenableDirectedGraph<String, DefaultEdge>(
-//				DefaultEdge.class);
-//
-//		// create a visualization using JGraph, via an adapter
-//		jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(g);
-//
-//		getContentPane().add(new mxGraphComponent(jgxAdapter));
-//		resize(DEFAULT_SIZE);
-//		
-//		for (int i = 0; i < tree.humans.size(); ++i) {
-//			g.addVertex(tree.humans.get(i).getFirstName());
-//		}
-//
-//		for (int i = 0; i < tree.humans.size(); ++i) {
-//			for (int j = 0; j < tree.humans.get(i).getNumChildren(); ++j) {
-//				Human a = tree.humans.get(i);
-//				g.addEdge(a.getFirstName(), tree.humans.get(a.children.get(j))
-//						.getFirstName());
-//			}
-//		}
-//
-//		// positioning via jgraphx layouts
-//		mxFastOrganicLayout layout = new mxFastOrganicLayout(jgxAdapter);
-//		layout.execute(jgxAdapter.getDefaultParent());
-//	}
-//
+		for (int i = 0; i < tree.humans.size(); ++i) {
+			for (int j = 0; j < tree.humans.get(i).getNumChildren(); ++j) {
+				Human a = tree.humans.get(i);
+				g.addEdge(a.getName(), tree.humans.get(a.children.get(j))
+						.getName());
+			}
+		}
+
+		Map<String, Object> edgeStyle = new HashMap<String, Object>();
+		//edgeStyle.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ORTHOGONAL);
+		edgeStyle.put(mxConstants.STYLE_SHAPE,    mxConstants.SHAPE_CONNECTOR);
+		edgeStyle.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
+		edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+		edgeStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+		edgeStyle.put(mxConstants.STYLE_FONTSIZE, 0);
+		edgeStyle.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#ffffff");
+		mxStylesheet stylesheet = new mxStylesheet();
+		stylesheet.setDefaultEdgeStyle(edgeStyle);
+		jgxAdapter.setStylesheet(stylesheet);
+		
+		// positioning via jgraphx layouts
+		mxFastOrganicLayout layout = new mxFastOrganicLayout(jgxAdapter);
+		layout.execute(jgxAdapter.getDefaultParent());
+	}
+	*/
+
 }
