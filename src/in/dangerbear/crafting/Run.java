@@ -1,7 +1,6 @@
 package in.dangerbear.crafting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
@@ -67,8 +66,8 @@ public class Run{ //extends JApplet {
 			
 			//Remove duplicates.
 			for(int j = 0; j < vectors.size() - 1; ++j){
-				while(vectors.get(j) == vectors.get(j + 1) && (j + 1) != vectors.size()){
-					vectors.remove(j + 1);
+				while((j + 1) != vectors.size() && vectors.get(j).equals(vectors.get(j + 1))){
+					vectors.remove(j);
 				}
 			}
 			

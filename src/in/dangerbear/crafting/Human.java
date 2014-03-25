@@ -82,7 +82,7 @@ public class Human extends Node {
 	/**
 	 * @return (ArrayList<int>) A list of IDs, which are object's offspring.
 	 */
-	public ArrayList<Integer> getChildren() {
+	public ArrayList<Integer> getChildren(){
 		return children;
 	}
 	
@@ -115,7 +115,7 @@ public class Human extends Node {
 	
 	public boolean hasRelationship(int target) {
 		for(int i = 0; i < relations.size(); ++i){
-			if(relations.get(i) == target) return true;
+			if(relations.get(i).equals(target)) return true;
 		}
 		return false;
 	}

@@ -130,6 +130,7 @@ public class FamilyTree {
 	 */
 	public void startRumor(ArrayList<Integer> initialVectors, int infectionProbability){
 		int totalInfected = initialVectors.size();
+		
 		//Create a queue to keep track of who is to try infecting.
 		Queue<Integer> infectionOrder = new ConcurrentLinkedQueue<Integer>();
 		
@@ -141,7 +142,6 @@ public class FamilyTree {
 		}
 		
 		//XXX: Could have an issue with infinite loop if not careful. Check.
-		//XXX: Issue with this section. Returns a greater totalInfected than there is population.
 		while(!infectionOrder.isEmpty()){
 			int infectorID = infectionOrder.remove();
 			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
@@ -157,8 +157,6 @@ public class FamilyTree {
 		//Check the percentage of infection.
 		double percent = 100.00 * (double)totalInfected / (double)humans.size();
 		System.out.println("Infection analysis: " + totalInfected + "/" + humans.size() +"(" + percent + "%)");
-		
-		
 	}
 
 	/**
@@ -174,10 +172,9 @@ public class FamilyTree {
 	private boolean startRumorHelper(int infectorID, int targetID, int infectionProbability){
 		//Check to see if the target is already infected.
 		if(eligibilityList1.get(targetID)) return false;
-		
-		//Not infected already. See if infection occurs.
+			//Not infected already. See if infection occurs.
 		if(rand.nextInt(100) >= infectionProbability) return false;
-		
+			
 		//Infection has occurred. Add to the infected list.
 		eligibilityList1.set(targetID);
 		return true;
@@ -191,7 +188,7 @@ public class FamilyTree {
 	 */
 	private void interconnectSocially(){
 		for(int i = 0; i < humans.size(); ++i){
-			int maxConnections = rand.nextInt(20); //20 should be MAX_SOCIAL_CLUSTER_SIZE
+			int maxConnections = rand.nextInt(30); //20 should be MAX_SOCIAL_CLUSTER_SIZE
 			//create an array that stores unique connections. Protects against redundancy later.
 			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
 			interconnectSociallyHelper(madeConnections, maxConnections, i);
