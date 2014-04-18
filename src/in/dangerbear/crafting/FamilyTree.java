@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author SWPhantom
@@ -29,10 +31,13 @@ public class FamilyTree {
 	public static int MIN_REPRODUCTIVE_AGE = 15;
 	public static int MAX_AGE = 100;
 	public static String NAME_FILEPATH = "US";
+	
+	private static final boolean DEBUG = true;
 
 	////Class variables
 	ArrayList<Human> humans;
 	BitSet eligibilityList1;
+	BitSet eligibilityList2;
 	ArrayList<String> males;
 	ArrayList<String> females;
 	ArrayList<String> lasts;
@@ -53,7 +58,7 @@ public class FamilyTree {
 	}
 
 ////METHODS////////////////////////////////////////////////////////////////////
-
+	
 	/**
 	 * Method generate
 	 * Generates the eligible last names and the Humans
@@ -71,6 +76,7 @@ public class FamilyTree {
 	 *            (ArrayList<String>) List of last names.
 	 */
 	public void generate() {
+		dp("DEBUG : In the generate function.");
 		this.males = parser.getNameList(MALE);
 		this.females = parser.getNameList(FEMALE);
 		this.lasts = parser.getNameList(LAST);
@@ -80,6 +86,7 @@ public class FamilyTree {
 		String tempLastName;
 		String tempFirstName;
 
+		dp("Making families.");
 		for (int i = 0; i < FAMILIES; ++i) {
 			// TODO: Implement a less costly no-repeat functionality.
 			int choice = rand.nextInt(lasts.size());
@@ -102,9 +109,75 @@ public class FamilyTree {
 		females.clear();
 
 		// Generate the ages of the populace.
+		dp("DEBUG : Generating ages.");
 		ages();
+		dp("DEBUG : Making genetic interconnections.");
 		interconnectGenetically();
+		dp("DEBUG : Making social interconnections.");
 		interconnectSocially();
+	}
+	
+	/**
+	 * Method startRumor
+	 * Gets an initial population of infected IDs and tries to infect all
+	 * neighboring nodes.
+	 * 
+	 * TODO: Change this to be more API-like. Consider returning an ArrayList
+	 * or the percentage of infection.
+	 * 
+	 * @param initialVectors
+	 * @param infectionProbability
+	 */
+	public void startRumor(ArrayList<Integer> initialVectors, int infectionProbability){
+		int totalInfected = initialVectors.size();
+		
+		//Create a queue to keep track of who is to try infecting.
+		Queue<Integer> infectionOrder = new ConcurrentLinkedQueue<Integer>();
+		
+		//List of people that are infected.
+		eligibilityList1.clear();
+		for(int i = 0; i < initialVectors.size(); ++i){
+			eligibilityList1.set(initialVectors.get(i));
+			infectionOrder.add(initialVectors.get(i));
+		}
+		
+		//XXX: Could have an issue with infinite loop if not careful. Check.
+		while(!infectionOrder.isEmpty()){
+			int infectorID = infectionOrder.remove();
+			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
+			for(int i = 0; i < infectorConnections.size(); ++i){
+				boolean infected = startRumorHelper(infectorID, infectorConnections.get(i), infectionProbability);
+				if(infected){
+					infectionOrder.add(infectorConnections.get(i));
+					++totalInfected;
+				}
+			}
+		}
+		
+		//Check the percentage of infection.
+		double percent = 100.00 * (double)totalInfected / (double)humans.size();
+		System.out.println("Infection analysis: " + totalInfected + "/" + humans.size() +"(" + percent + "%)");
+	}
+
+	/**
+	 * Method startRumorHelper
+	 * TODO: The reason this takes in infectorID is to determine connection-specific
+	 * infection probability (how much the pair of people like each other, etc).
+	 * 
+	 * @param infectorID
+	 * @param targetID
+	 * @param infectionProbability
+	 * @return
+	 */
+	private boolean startRumorHelper(int infectorID, int targetID, int infectionProbability){
+		//Check to see if the target is already infected.
+		if(eligibilityList1.get(targetID)) return false;
+			//Not infected already. See if infection occurs.
+		if(rand.nextInt(100) >= infectionProbability) return false;
+			
+		//Infection has occurred. Add to the infected list.
+		eligibilityList1.set(targetID);
+		return true;
 	}
 
 	/**
@@ -114,41 +187,14 @@ public class FamilyTree {
 	 * 
 	 */
 	private void interconnectSocially(){
-		
 		for(int i = 0; i < humans.size(); ++i){
-			int maxConnections = rand.nextInt(humans.size()/10); //20 should be MAX_SOCIAL_CLUSTER_SIZE
+			int maxConnections = rand.nextInt(30); //20 should be MAX_SOCIAL_CLUSTER_SIZE
 			//create an array that stores unique connections. Protects against redundancy later.
 			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
 			interconnectSociallyHelper(madeConnections, maxConnections, i);
 			for(int j = 0; j < madeConnections.size(); ++j){
 				makeRelationshipConnection(i, madeConnections.get(j));
 			}
-		}
-	}
-	
-	/**
-	 * Method interconnectSociallyHelper
-	 * TODO: Potential problem with this never finding a valid ID.
-	 * Need to rethink this later, especially with small populations.
-	 * 
-	 * @param uniques
-	 * @param maxConnections
-	 * @param sourceID
-	 */
-	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
-		int i = 0;
-		int target = -1;
-		while(i < maxConnections){
-			//Generate potential connection ID
-			target = rand.nextInt(humans.size());
-			
-			//Check for validity.
-			if(target == sourceID) continue;
-			if(humans.get(sourceID).hasRelationship(target)) continue;
-			
-			//Target has passed the gauntlet. Add to uniques arraylist.
-			uniques.add(target);
-			++i;
 		}
 	}
 	
@@ -398,6 +444,33 @@ public class FamilyTree {
 	}
 	
 	/**
+	 * Method interconnectSociallyHelper
+	 * TODO: Potential problem with this never finding a valid ID.
+	 * Need to rethink this later, especially with small populations.
+	 * 
+	 * @param uniques
+	 * @param maxConnections
+	 * @param sourceID
+	 */
+	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
+		int i = 0;
+		int target = -1;
+		while(i < maxConnections){
+			//Generate potential connection ID
+			target = rand.nextInt(humans.size());
+			
+			//Check for validity.
+			if(target == sourceID) continue;
+			if(humans.get(sourceID).hasRelationship(target)) continue;
+			
+			//Target has passed the gauntlet. Add to uniques arraylist.
+			uniques.add(target);
+			++i;
+		}
+	}
+	
+	
+	/**
 	 * Method makeRelationshipConnection
 	 * TODO: Make a reasonable relationship generator. Based on family/owing money/etc.
 	 * 
@@ -500,11 +573,11 @@ public class FamilyTree {
 	 * 
 	 * Brighinzone Stranbii(90)
 	 *  Children:
-	 *   Baccone de Calce
-	 *   Giollius de Calce
-	 *   Giovanna de Calce
-	 *   Cambius Simonis
-	 *   Berardus Doberti
+	 *   Baccone de Calce (80)
+	 *   Giollius de Calce (80)
+	 *   Giovanna de Calce (23)
+	 *   Cambius Simonis (23)
+	 *   Berardus Doberti (43)
 	 * 
 	 * Cambius Simonis(88)
 	 */
@@ -544,6 +617,12 @@ public class FamilyTree {
 			} else {
 				System.out.println("No");
 			}
+		}
+	}
+	
+	private void dp(String input){
+		if(DEBUG){
+			System.out.println(input);
 		}
 	}
 
