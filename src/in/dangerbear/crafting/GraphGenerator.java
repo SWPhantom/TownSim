@@ -1,6 +1,3 @@
-/**
- * 
- */
 package in.dangerbear.crafting;
 
 import java.io.File;
@@ -10,15 +7,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-/**
- * @author SWPhantom
- * 
- */
-
-public class FamilyTree {
+public class GraphGenerator {
 ////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
 	public final static int MALE = 0;
@@ -37,7 +27,6 @@ public class FamilyTree {
 	////Class variables
 	ArrayList<Human> humans;
 	BitSet eligibilityList1;
-	BitSet eligibilityList2;
 	ArrayList<String> males;
 	ArrayList<String> females;
 	ArrayList<String> lasts;
@@ -45,7 +34,7 @@ public class FamilyTree {
 	Parser parser;
 
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
-	public FamilyTree() {
+	public GraphGenerator() {
 		humans = new ArrayList<Human>();
 		parser = new Parser();
 
@@ -75,7 +64,7 @@ public class FamilyTree {
 	 * @param lasts
 	 *            (ArrayList<String>) List of last names.
 	 */
-	public void generate() {
+	public ArrayList<Human> generate() {
 		dp("DEBUG : In the generate function.");
 		this.males = parser.getNameList(MALE);
 		this.females = parser.getNameList(FEMALE);
@@ -115,70 +104,10 @@ public class FamilyTree {
 		interconnectGenetically();
 		dp("DEBUG : Making social interconnections.");
 		interconnectSocially();
-	}
-	
-	/**
-	 * Method startRumor
-	 * Gets an initial population of infected IDs and tries to infect all
-	 * neighboring nodes.
-	 * 
-	 * TODO: Change this to be more API-like. Consider returning an ArrayList
-	 * or the percentage of infection.
-	 * 
-	 * @param initialVectors
-	 * @param infectionProbability
-	 */
-	public void startRumor(ArrayList<Integer> initialVectors, int infectionProbability){
-		int totalInfected = initialVectors.size();
 		
-		//Create a queue to keep track of who is to try infecting.
-		Queue<Integer> infectionOrder = new ConcurrentLinkedQueue<Integer>();
-		
-		//List of people that are infected.
-		eligibilityList1.clear();
-		for(int i = 0; i < initialVectors.size(); ++i){
-			eligibilityList1.set(initialVectors.get(i));
-			infectionOrder.add(initialVectors.get(i));
-		}
-		
-		//XXX: Could have an issue with infinite loop if not careful. Check.
-		while(!infectionOrder.isEmpty()){
-			int infectorID = infectionOrder.remove();
-			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
-			for(int i = 0; i < infectorConnections.size(); ++i){
-				boolean infected = startRumorHelper(infectorID, infectorConnections.get(i), infectionProbability);
-				if(infected){
-					infectionOrder.add(infectorConnections.get(i));
-					++totalInfected;
-				}
-			}
-		}
-		
-		//Check the percentage of infection.
-		double percent = 100.00 * (double)totalInfected / (double)humans.size();
-		System.out.println("Infection analysis: " + totalInfected + "/" + humans.size() +"(" + percent + "%)");
+		return humans;
 	}
 
-	/**
-	 * Method startRumorHelper
-	 * TODO: The reason this takes in infectorID is to determine connection-specific
-	 * infection probability (how much the pair of people like each other, etc).
-	 * 
-	 * @param infectorID
-	 * @param targetID
-	 * @param infectionProbability
-	 * @return
-	 */
-	private boolean startRumorHelper(int infectorID, int targetID, int infectionProbability){
-		//Check to see if the target is already infected.
-		if(eligibilityList1.get(targetID)) return false;
-			//Not infected already. See if infection occurs.
-		if(rand.nextInt(100) >= infectionProbability) return false;
-			
-		//Infection has occurred. Add to the infected list.
-		eligibilityList1.set(targetID);
-		return true;
-	}
 
 	/**
 	 * Method interconnectSocially
@@ -284,63 +213,6 @@ public class FamilyTree {
 	}
 
 	/**
-	 * Method nthConnections
-	 * Returns a list of IDs that correspond to the target
-	 * Human's N linked Human Nodes. ie. If you call this function on a child
-	 * with two parents and no kids, the returned list will contain only his
-	 * parents for N = 1. If you call the same function with N = 2, you will get
-	 * a list of the child's parents AND grandparents.
-	 * 
-	 * @param humanID
-	 * @return
-	 */
-	public ArrayList<Integer> nthConnections(int humanID, int n) {
-		eligibilityList1.clear();
-		ArrayList<Integer> output = new ArrayList<Integer>();
-
-		nthConnectionsHelper(humanID, n);
-
-		for (int i = 0; i < humans.size(); ++i) {
-			if (eligibilityList1.get(i)) {
-				output.add(i);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Method printNthConnections
-	 * Printing function wrapper for getNthConnection.
-	 * 
-	 * @param humanID
-	 * @param n
-	 */
-	public void printNthConnections(int humanID, int n) {
-		System.out.println("Printing " + humans.get(humanID).getName() + "'s "
-				+ n + "connections.");
-		ArrayList<Integer> outputList = this.nthConnections(humanID, n);
-
-		for (Integer i : outputList) {
-			System.out.println(humans.get(i).toString());
-		}
-		System.out.println();
-	}
-
-	/**
-	 * Method hasPath
-	 * The method that initializes the eligibility BitSet and calls the
-	 * recursive hasPathHelper function.
-	 * 
-	 * @param source 
-	 * @param target
-	 * @return
-	 */
-	public boolean hasPath(int source, int target) {
-		eligibilityList1.clear();
-		return hasPathHelper(source, target);
-	}
-
-	/**
 	 * Method readConfig
 	 * Simple routine to read the Genetics config files.
 	 * Populates generational variables.
@@ -382,41 +254,6 @@ public class FamilyTree {
 	}
 
 	////Helpers
-
-	/**
-	 * Method hasPathHelper
-	 * Recursive method that does a depth-first search of the graph
-	 * to see if the source Human is connected to the Target Human.
-	 * 
-	 * @param source (int) Index/ID of the current node.
-	 * @param target (int) Index/ID of the node to be reached.
-	 * @return
-	 */
-	private boolean hasPathHelper(int source, int target) {
-		// I've been here before. No good.
-		if (eligibilityList1.get(source) == true) {
-			return false;
-		}
-		// Make sure not to come here again.
-		eligibilityList1.set(source, true);
-
-		// If this function has happened upon the target, we're done!
-		if (source == target) {
-			return true;
-		}
-
-		// Start checking the parents and the children.
-		Human a = humans.get(source);
-		if (a.getMotherID() != -1 && hasPathHelper(a.getMotherID(), target))
-			return true;
-		if (a.getFatherID() != -1 && hasPathHelper(a.getFatherID(), target))
-			return true;
-		for (int i = 0; i < a.getNumChildren(); ++i) {
-			if (hasPathHelper(a.getChildren().get(i), target))
-				return true;
-		}
-		return false;
-	}
 
 	/**
 	 * Method makeConnection Connects the parent and child nodes, according to
@@ -504,119 +341,6 @@ public class FamilyTree {
 		//Set the first humans to the largest ages.
 		for (int i = 0; i < POPULATION; ++i) {
 			humans.get(i).setAge(ages[POPULATION - 1 - i]);
-		}
-	}
-
-	/**
-	 * Method nthConnectionsHelper
-	 * Recursive function that sets the Eligibility BitSet indeces that
-	 * correspond to the Humans that are within n links from a given
-	 * Human.
-	 * 
-	 * @param humanID
-	 * @param n
-	 */
-	private void nthConnectionsHelper(int humanID, int n) {
-		// If this Human has been accessed already, stop!
-		if (eligibilityList1.get(humanID)) {
-			return;
-		}
-
-		// Add yourself to the list.
-		eligibilityList1.set(humanID);
-
-		// If you're the last connection to be checked, stop before querying
-		// your connections.
-		if (n == 0) {
-			return;
-		}
-
-		// Stores the potential family to check.
-		ArrayList<Integer> payload = new ArrayList<Integer>();
-
-		// Get the parents.
-		int temp = humans.get(humanID).getFatherID();
-		if (temp != -1)
-			payload.add(temp);
-		temp = humans.get(humanID).getMotherID();
-		if (temp != -1)
-			payload.add(temp);
-
-		// Time to add the children. Create a temp ArrayList.
-		ArrayList<Integer> tempChildren = humans.get(humanID).getChildren();
-		for (int i = 0; i < tempChildren.size(); ++i) {
-			payload.add(tempChildren.get(i));
-		}
-
-		for (int i = 0; i < payload.size(); ++i) {
-			nthConnectionsHelper(payload.get(i), n - 1);
-		}
-	}
-
-	////Debug
-
-	/**
-	 * Method displayMemory Shows off the memory used at the moment.
-	 * 
-	 */
-	public static void displayMemory() {
-		Runtime r = Runtime.getRuntime();
-		r.gc();
-		r.gc();
-		System.out.println("Memory Used=" + (r.totalMemory() - r.freeMemory()));
-	}
-
-	/**
-	 * Method DEBUG_PRINT Current desired output:
-	 * 
-	 * Martinella Stranbii(99)
-	 * 
-	 * Brighinzone Stranbii(90)
-	 *  Children:
-	 *   Baccone de Calce (80)
-	 *   Giollius de Calce (80)
-	 *   Giovanna de Calce (23)
-	 *   Cambius Simonis (23)
-	 *   Berardus Doberti (43)
-	 * 
-	 * Cambius Simonis(88)
-	 */
-	public void DEBUG_PRINT() {
-		for (int i = 0; i < humans.size(); ++i) {
-			System.out.println(humans.get(i).getName() + "("
-					+ humans.get(i).getAge() + ")");
-			if (humans.get(i).getNumChildren() > 0) {
-				System.out.println(" Children:");
-				for (int j = 0; j < humans.get(i).getNumChildren(); ++j) {
-					System.out.println("  "
-							+ humans.get(humans.get(i).children.get(j))
-									.getName() + "(" + humans.get(humans.get(i).children.get(j)).getAge() + ")");
-				}
-			}
-			System.out.println();
-		}
-	}
-
-	/**
-	 * Method DEBUG_CONNECTIONS_PRINT
-	 * Picks two random nodes and runs hasPath on them. Prints the result.
-	 * 
-	 * @param tests
-	 */
-	public void DEBUG_CONNECTIONS_PRINT(int tests) {
-		System.out.println("Making many random connection queries:");
-		int a;
-		int b;
-		for (int i = 0; i < tests; ++i) {
-			a = rand.nextInt(humans.size());
-			b = rand.nextInt(humans.size());
-			System.out.print("Are " + humans.get(a).getName() + " and "
-					+ humans.get(b).getName() + " connected? ");
-			if (hasPath(a, b)) {
-				System.out.println("Yes");
-			} else {
-				System.out.println("No");
-			}
 		}
 	}
 	

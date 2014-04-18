@@ -30,8 +30,9 @@ public class Run{ //extends JApplet {
 	private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
 	private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
 	 */
-
-	public static FamilyTree tree = new FamilyTree();
+	public static ArrayList<Human> humans = new ArrayList<Human>();
+	public static GraphGenerator tree = new GraphGenerator();
+	public static GraphDemo treeDemo = new GraphDemo();
 
 	public static void main(String[] args) {
 		// Generation segment.
@@ -40,20 +41,23 @@ public class Run{ //extends JApplet {
 		key.next();
 		key.close();
 		System.out.println("Starting to generate the population.");
-		tree.generate();
+		humans = tree.generate();
+		
+		
+		System.out.println("Finished generating!");
 
 		// Output data of generated populace.
-		tree.printNthConnections(0, 1);
-		tree.printNthConnections(0, 2);
-		tree.printNthConnections(0, 3);
-		tree.printNthConnections(1, 1);
-		tree.printNthConnections(1, 2);
-		tree.printNthConnections(1, 3);
-		tree.printNthConnections(2, 1);
-		tree.printNthConnections(2, 2);
-		tree.printNthConnections(2, 3);
+		treeDemo.printNthConnections(humans, 0, 1);
+		treeDemo.printNthConnections(humans, 0, 2);
+		treeDemo.printNthConnections(humans, 0, 3);
+		treeDemo.printNthConnections(humans, 1, 1);
+		treeDemo.printNthConnections(humans, 1, 2);
+		treeDemo.printNthConnections(humans, 1, 3);
+		treeDemo.printNthConnections(humans, 2, 1);
+		treeDemo.printNthConnections(humans, 2, 2);
+		treeDemo.printNthConnections(humans, 2, 3);
 
-		tree.DEBUG_PRINT();
+		treeDemo.DEBUG_PRINT(humans);
 		
 		//Rumor spreading tests.
 		ArrayList<Integer> vectors = new ArrayList<Integer>();
