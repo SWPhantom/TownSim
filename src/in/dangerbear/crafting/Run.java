@@ -32,7 +32,7 @@ public class Run{ //extends JApplet {
 	 */
 	public static ArrayList<Human> humans = new ArrayList<Human>();
 	public static GraphGenerator tree = new GraphGenerator();
-	public static GraphDemo treeDemo = new GraphDemo();
+	public static GraphDemo treeDemo;
 
 	public static void main(String[] args) {
 		// Generation segment.
@@ -42,6 +42,7 @@ public class Run{ //extends JApplet {
 		key.close();
 		System.out.println("Starting to generate the population.");
 		humans = tree.generate();
+		treeDemo = new GraphDemo(humans);
 		
 		
 		System.out.println("Finished generating!");

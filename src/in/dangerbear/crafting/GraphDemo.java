@@ -17,16 +17,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class GraphDemo {
 ////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
-	public final static int MALE = 0;
-	public final static int FEMALE = 1;
-	public final static int LAST = 2;
-
-	public static int FAMILIES = 80;
-	public static int POPULATION = 2000;
-	public static int MAX_OFFSPRING = 20;
-	public static int MIN_REPRODUCTIVE_AGE = 15;
-	public static int MAX_AGE = 100;
-	public static String NAME_FILEPATH = "US";
 	
 	private static final boolean DEBUG = true;
 
@@ -36,7 +26,8 @@ public class GraphDemo {
 	Parser parser;
 
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
-	public GraphDemo() {
+	public GraphDemo(ArrayList<Human> humans) {
+		eligibilityList1 = new BitSet(humans.size());
 	}
 
 ////METHODS////////////////////////////////////////////////////////////////////
@@ -316,7 +307,7 @@ public class GraphDemo {
 	
 	private void dp(String input){
 		if(DEBUG){
-			dp(input);
+			System.out.println(input);
 		}
 	}
 
