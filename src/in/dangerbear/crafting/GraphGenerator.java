@@ -11,8 +11,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class GraphGenerator {
-////DECLARATIONS///////////////////////////////////////////////////////////////
+public class GraphGenerator{
+	////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
 	public final static int MALE = 0;
 	public final static int FEMALE = 1;
@@ -27,7 +27,7 @@ public class GraphGenerator {
 	public static int TOTAL_GROUPS = 50;
 	public static int ADOPTION_PROBABILITY = 10; //Percent
 	public static String NAME_FILEPATH = "US";
-	
+
 	private static final boolean DEBUG = true;
 
 	////Class variables
@@ -39,8 +39,8 @@ public class GraphGenerator {
 	Random rand = new Random();
 	Parser parser;
 
-////CONSTRUCTORS///////////////////////////////////////////////////////////////
-	public GraphGenerator() {
+	////CONSTRUCTORS///////////////////////////////////////////////////////////////
+	public GraphGenerator(){
 		humans = new ArrayList<Human>();
 		parser = new Parser();
 
@@ -52,14 +52,13 @@ public class GraphGenerator {
 
 	}
 
-////METHODS////////////////////////////////////////////////////////////////////
-	
+	////METHODS////////////////////////////////////////////////////////////////////
+
 	/**
-	 * Method generate
-	 * Generates the eligible last names and the Humans
-	 * with random gender assignment and names.
+	 * Method generate Generates the eligible last names and the Humans with
+	 * random gender assignment and names.
 	 */
-	public ArrayList<Human> generate() {
+	public ArrayList<Human> generate(){
 		dp("DEBUG : In the generate function.");
 		this.males = parser.getNameList(MALE);
 		this.females = parser.getNameList(FEMALE);
@@ -71,7 +70,7 @@ public class GraphGenerator {
 		String tempFirstName;
 
 		dp("Making families.");
-		for (int i = 0; i < FAMILIES; ++i) {
+		for(int i = 0; i < FAMILIES; ++i){
 			// TODO: Implement a less costly no-repeat functionality.
 			int choice = rand.nextInt(lasts.size());
 			tempLasts[i] = lasts.get(choice);
@@ -79,12 +78,12 @@ public class GraphGenerator {
 		}
 		lasts.clear();
 
-		for (int i = 0; i < POPULATION; ++i) {
+		for(int i = 0; i < POPULATION; ++i){
 			tempLastName = tempLasts[rand.nextInt(tempLasts.length)];
-			if (rand.nextInt(2) == 0) {// Male created
+			if(rand.nextInt(2) == 0){// Male created
 				tempFirstName = males.get(rand.nextInt(males.size()));
 				humans.add(new Human(tempLastName, tempFirstName, MALE));
-			} else {// Female created
+			}else{// Female created
 				tempFirstName = females.get(rand.nextInt(females.size()));
 				humans.add(new Human(tempLastName, tempFirstName, FEMALE));
 			}
@@ -98,25 +97,24 @@ public class GraphGenerator {
 		interconnectGenetically();
 		dp("DEBUG : Making social interconnections.");
 		interconnectSocially();
-		
+
 		return humans;
 	}
-	
+
 	/**
-	 * Method interconnectGenetically
-	 * Starts attempting to create parent/child connections
-	 * for every Human. Using the value returned by helper function
+	 * Method interconnectGenetically Starts attempting to create parent/child
+	 * connections for every Human. Using the value returned by helper function
 	 * makeConnection, this attempts to stop connections ASAP.
 	 * 
-	 * XXX: Some bad things are making too many disparate clusters. Need to
-	 * fix.
+	 * XXX: Some bad things are making too many disparate clusters. Need to fix.
 	 * 
 	 */
-	private void interconnectGenetically() {
-		for (Human parent: humans) {
+	private void interconnectGenetically(){
+		for(Human parent: humans){
+			int parentAge = parent.getAge();
 			// Hit the lowest age. No one after this can have children. End!
-			if (parent.getAge() < MIN_REPRODUCTIVE_AGE) {
-				return;
+			if(parentAge < MIN_REPRODUCTIVE_AGE){
+				break;
 			}
 
 			// Set everything up to the current human's ID to false. They are
@@ -125,78 +123,104 @@ public class GraphGenerator {
 			eligibilityList1.set(parent.ID, humans.size(), true);
 
 			// Begin elimination of potential child connections.
-			for (int j = parent.ID; j < humans.size(); ++j) {
+			for(int j = parent.ID; j < humans.size(); ++j){
 				Human child = humans.get(j);
 
 				// Check for sameness.
-				if (parent.ID == j) {
+				if(parent.ID == j){
 					eligibilityList1.set(j, false);
+					continue;
 				}
 				// Check for age difference.
-				if (parent.getAge() - child.getAge() < MIN_REPRODUCTIVE_AGE) {
+				if(parentAge - child.getAge() < MIN_REPRODUCTIVE_AGE){
 					eligibilityList1.set(j, false);
+					continue;
 				}
 
 				// Check for name difference.
 				// TODO: Fiddle with the ADOPTION_PROBABILITY
-				if (!parent.getLastName().equals(child.getLastName())) {
+				if(!parent.getLastName().equals(child.getLastName())){
 					//Adoption eligibility
 					if(rand.nextInt(100) + 1 >= ADOPTION_PROBABILITY){
 						eligibilityList1.set(j, false);
+						continue;
 					}
 				}
 
 				// Check for existing parenthood.
-				if (parent.getGender() == MALE && child.getFatherID() != -1) {
+				if(parent.getGender() == MALE && child.getFatherID() != -1){
 					eligibilityList1.set(j, false);
+					continue;
 				}
-				if (parent.getGender() == FEMALE && child.getMotherID() != -1) {
+				if(parent.getGender() == FEMALE && child.getMotherID() != -1){
 					eligibilityList1.set(j, false);
+					continue;
 				}
 			}
 
 			// If no other humans are eligible, move onto the next potential parent.
-			if (eligibilityList1.cardinality() <= 0) {
+			if(eligibilityList1.cardinality() <= 0){
 				continue;
 			}
 
 			// Create the list of IDs of eligible children.
 			Queue<Integer> eligibleChildren = new ConcurrentLinkedQueue<Integer>();
-			for (int j = parent.ID; j < eligibilityList1.size(); ++j) {
-				if (eligibilityList1.get(j)) {
+			for(int j = parent.ID; j < eligibilityList1.size(); ++j){
+				if(eligibilityList1.get(j)){
 					eligibleChildren.add(j);
 				}
 			}
-			
+
 			/* Attempt to make a random amount of connections between the
 			 * current node and the eligible children nodes.
 			 */
 			int maxOffspring = rand.nextInt(MAX_OFFSPRING + 1);
-			while(maxOffspring > 0 && eligibleChildren.size() > 0) {
+			while(maxOffspring > 0 && eligibleChildren.size() > 0){
 				makeGeneticConnection(parent.ID, eligibleChildren.remove());
 				--maxOffspring;
 			}
 		}
-		
+
 		//Make sure most nodes have parents. Youngest first.
 		ListIterator<Human> li = humans.listIterator(humans.size());
-
 		while(li.hasPrevious()){
 			Human child = li.previous();
 			//Obtain mother.
 			if(child.getMotherID() == -1){
-				
+				getParent(child, FEMALE);
 			}
+			//Obtain father.
 			if(child.getFatherID() == -1){
-				
+				getParent(child, MALE);
 			}
 		}
 	}
 
+	private void getParent(Human child, int gender){
+		int iter = child.ID;
+		int childAge = child.getAge();
+		Human parent;
+
+		while(iter-- > 0){
+			parent = humans.get(iter);
+			if(parent.getGender() != gender){
+				continue;
+			}
+			if(parent.getAge() - childAge < MIN_REPRODUCTIVE_AGE){
+				continue;
+			}
+			if(!parent.getLastName().equals(child.getLastName())){
+				continue;
+			}
+			makeGeneticConnection(parent.ID, child.ID);
+			break;
+		}
+	}
+
 	/**
-	 * Method interconnectSocially
-	 * Connects the humans randomly.
-	 * TODO: Change to use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total population.)
+	 * Method interconnectSocially Connects the humans randomly. TODO: Change to
+	 * use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total
+	 * population.)
 	 * 
 	 */
 	private void interconnectSocially(){
@@ -205,7 +229,7 @@ public class GraphGenerator {
 			int humanChoice;
 			int groupChoice;
 			//create an array that stores unique connections. Protects against redundancy later.
-			
+
 			for(int j = 0; j < maxGroups; ++j){
 				humanChoice = rand.nextInt(humans.size());
 				groupChoice = rand.nextInt(TOTAL_GROUPS);
@@ -220,20 +244,18 @@ public class GraphGenerator {
 	 * Method makeConnection Connects the parent and child nodes, according to
 	 * parameter IDs. Makes sure the genders match on the parent connections.
 	 * 
-	 * @param parent
-	 *            (int) referencing the ID number of parent.
-	 * @param child
-	 *            (int) referencing the ID number of child.
+	 * @param parent (int) referencing the ID number of parent.
+	 * @param child (int) referencing the ID number of child.
 	 * @return (int) 0: Failure. 1: Success.
 	 */
-	private int makeGeneticConnection(int parent, int child) {
+	private int makeGeneticConnection(int parent, int child){
 		int parentGender = humans.get(parent).getGender();
 
-		if (parentGender == MALE) {
+		if(parentGender == MALE){
 			humans.get(child).setFatherID(parent);
 			humans.get(parent).addChild(child);
 			return 1;
-		} else if (parent == FEMALE) {
+		}else if(parentGender == FEMALE){
 			humans.get(child).setMotherID(parent);
 			humans.get(parent).addChild(child);
 			return 1;
@@ -245,13 +267,13 @@ public class GraphGenerator {
 	 * Method ages This creates a distribution of ages and assigns them to the
 	 * Human objects. Does this in a greatest -> least order.
 	 * 
-	 * TODO: Add distribution functions.
-	 * Could use http://www.ckollars.org/population-distribution-age-sex-desktop.html
+	 * TODO: Add distribution functions. Could use
+	 * http://www.ckollars.org/population-distribution-age-sex-desktop.html
 	 * 
 	 */
-	private void ages() {
+	private void ages(){
 		int ages[] = new int[POPULATION];
-		for (int i = 0; i < POPULATION; ++i) {
+		for(int i = 0; i < POPULATION; ++i){
 			ages[i] = rand.nextInt(MAX_AGE + 1);
 			// ages[i] = (rand.nextGaussian()/3);
 		}
@@ -259,24 +281,23 @@ public class GraphGenerator {
 		Arrays.sort(ages);
 
 		//Set the first humans to the largest ages.
-		for (int i = 0; i < POPULATION; ++i) {
+		for(int i = 0; i < POPULATION; ++i){
 			humans.get(i).setAge(ages[POPULATION - 1 - i]);
 		}
 	}
-	
+
 	/**
-	 * Method readConfig
-	 * Simple routine to read the Genetics config files.
+	 * Method readConfig Simple routine to read the Genetics config files.
 	 * Populates generational variables.
 	 * 
 	 */
-	public static void readConfig() {
+	public static void readConfig(){
 		File file = new File("Configs/Genetics.ini");
-		try {
+		try{
 			Scanner s = new Scanner(file);
-			while (s.hasNext()) {
+			while(s.hasNext()){
 				String inputToken = s.next();
-				switch (inputToken) {
+				switch(inputToken){
 				case "POPULATION:":
 					POPULATION = s.nextInt();
 					break;
@@ -309,9 +330,10 @@ public class GraphGenerator {
 				}
 			}
 			s.close();
-		} catch (FileNotFoundException e){}
+		}catch(FileNotFoundException e){
+		}
 	}
-	
+
 	private void dp(String input){
 		if(DEBUG){
 			System.out.println(input);

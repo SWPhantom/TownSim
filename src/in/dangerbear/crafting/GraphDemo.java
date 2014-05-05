@@ -270,8 +270,14 @@ public class GraphDemo {
 	 * Method DEBUG_PRINT Current desired output:
 	 * 
 	 * Martinella Stranbii(99)
+	 *  Parents:
+	 *   F Man
+	 *   V Woman
 	 * 
 	 * Brighinzone Stranbii(90)
+	 *  Parents:
+	 *   Billman Toad
+	 *   Billwoman Toad
 	 *  Children:
 	 *   Baccone de Calce (80)
 	 *   Giollius de Calce (80)
@@ -280,16 +286,34 @@ public class GraphDemo {
 	 *   Berardus Doberti (43)
 	 * 
 	 * Cambius Simonis(88)
+	 *  Parents:
+	 *   Ciaman Man
+	 *   Freudwoman Woman
 	 */
 	public void DEBUG_PRINT(ArrayList<Human> humans) {
-		for (int i = 0; i < humans.size(); ++i) {
-			dp(humans.get(i).getName() + "("
-					+ humans.get(i).getAge() + ")");
-			if (humans.get(i).getNumChildren() > 0) {
+		for (Human target: humans) {
+			Human family;
+			dp(target.getName() + "(" + target.getAge() + ")");
+			dp(" Parents:");
+			if(target.getFatherID() != -1){
+				family = humans.get(target.getFatherID());
+				dp("  "+ family.getName() + "(" + family.getAge() + ")");
+			}else{
+				dp("  NO FATHER");
+			}
+			
+			if(target.getMotherID() != -1){
+				family = humans.get(target.getMotherID());
+				dp("  "+ family.getName() + "(" + family.getAge() + ")");
+			}else{
+				dp("  NO MOTHER");
+			}
+			
+			if (target.getNumChildren() > 0) {
 				dp(" Children:");
-				for (int j = 0; j < humans.get(i).getNumChildren(); ++j) {
-					dp("  " + humans.get(humans.get(i).children.get(j))
-									.getName() + "(" + humans.get(humans.get(i).children.get(j)).getAge() + ")");
+				for (int j = 0; j < target.getNumChildren(); ++j) {
+					family = humans.get(target.children.get(j));
+					dp("  " + family.getName() + "(" + family.getAge() + ")");
 				}
 			}
 			dp("");
