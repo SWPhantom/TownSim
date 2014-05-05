@@ -155,5 +155,14 @@ public class Human extends Node {
 		return "Human [lastName=" + lastName + ", firstName=" + firstName + "]";
 	}
 
+	public boolean isInGroup(int group) {
+		for(Integer a: groups){
+			if(a.equals(group)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	
 }

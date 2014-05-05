@@ -60,7 +60,21 @@ public class GraphDemo {
 		//XXX: Could have an issue with infinite loop if not careful. Check.
 		while(!infectionOrder.isEmpty()){
 			int infectorID = infectionOrder.remove();
-			ArrayList<Integer> infectorConnections = humans.get(infectorID).getSocialConnections();
+			Human infector = humans.get(infectorID);
+			ArrayList<Integer> infectorConnections = new ArrayList<Integer>();
+			
+			for(Human target: humans){
+				if(eligibilityList1.get(target.ID)){
+				for(int j = 0; j < infector.groups.size(); ++j){
+					if(target.isInGroup(infector.groups.get(j))){
+						infectorConnections.add(target.ID);
+					}
+				}
+				}else{
+					//do nothing
+				}
+			}
+			
 			for(int i = 0; i < infectorConnections.size(); ++i){
 				boolean infected = startRumorHelper(infectorID, infectorConnections.get(i), infectionProbability);
 				if(infected){
