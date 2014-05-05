@@ -145,14 +145,16 @@ public class Run{ // extends JApplet {
 		getContentPane().add(new mxGraphComponent(jgxAdapter));
 		resize(DEFAULT_SIZE);
 		
-		for(int i = 0; i < tree.humans.size(); ++i){
-			g.addVertex(tree.humans.get(i).getName());
+		for(Human person: humans){
+			g.addVertex(person.getName() + "(" + person.getAge() + ")");
 		}
 		
-		for(int i = 0; i < tree.humans.size(); ++i){
-			for(int j = 0; j < tree.humans.get(i).getNumChildren(); ++j){ 
-				Human a = tree.humans.get(i);
-				g.addEdge(a.getName(), tree.humans.get(a.children.get(j)).getName());
+		for(Human person: humans){
+			for(int j = 0; j < person.getNumChildren(); ++j){
+			Human child = person.children.get(j);
+			String source = person.getName() + "(" + person.getAge() + ")");
+			String target = child.getName() + "(" + child.getAge() + ")");
+				g.addEdge(source, target);
 			}
 		}
 		
