@@ -20,6 +20,9 @@ public class GraphGenerator {
 	public static int MAX_OFFSPRING = 20;
 	public static int MIN_REPRODUCTIVE_AGE = 15;
 	public static int MAX_AGE = 100;
+	public static int MAX_GROUPS = 10;
+	public static int TOTAL_GROUPS = 50;
+	public static int ADOPTION_PROBABILITY = 10; //Percent
 	public static String NAME_FILEPATH = "US";
 	
 	private static final boolean DEBUG = true;
@@ -117,12 +120,15 @@ public class GraphGenerator {
 	 */
 	private void interconnectSocially(){
 		for(int i = 0; i < humans.size(); ++i){
-			int maxConnections = rand.nextInt(30); //20 should be MAX_SOCIAL_CLUSTER_SIZE
+			int maxGroups = rand.nextInt(MAX_GROUPS);
+			int humanChoice;
+			int groupChoice;
 			//create an array that stores unique connections. Protects against redundancy later.
-			ArrayList<Integer> madeConnections = new ArrayList<Integer>();
-			interconnectSociallyHelper(madeConnections, maxConnections, i);
-			for(int j = 0; j < madeConnections.size(); ++j){
-				makeRelationshipConnection(i, madeConnections.get(j));
+			
+			for(int j = 0; j < maxGroups; ++j){
+				humanChoice = rand.nextInt(humans.size());
+				groupChoice = rand.nextInt(TOTAL_GROUPS);
+				humans.get(humanChoice).addToGroup(groupChoice);
 			}
 		}
 	}
@@ -132,6 +138,9 @@ public class GraphGenerator {
 	 * Starts attempting to create parent/child connections
 	 * for every Human. Using the value returned by helper function
 	 * makeConnection, this attempts to stop connections ASAP.
+	 * 
+	 * XXX: Some bad things are making too many clusters. Need to
+	 * fix.
 	 * 
 	 */
 	private void interconnectGenetically() {
@@ -161,11 +170,10 @@ public class GraphGenerator {
 				}
 
 				// Check for name difference.
-				// TODO: This should be altered by a ADOPTION_PROBABILITY input.
-				// Some people can adopt?
+				// TODO: Fiddle with the ADOPTION_PROBABILITY
 				if (!parent.getLastName().equals(child.getLastName())) {
 					//Adoption eligibility
-					if(rand.nextInt(100) < 80){//80 should be ADOPTION_PROBABILITY
+					if(rand.nextInt(100) > ADOPTION_PROBABILITY){
 						eligibilityList1.set(j, false);
 					}
 				}
@@ -179,13 +187,12 @@ public class GraphGenerator {
 				}
 			}
 
-			// If no other humans are eligible, move onto the next potential
-			// parent.
+			// If no other humans are eligible, move onto the next potential parent.
 			if (eligibilityList1.cardinality() <= 0) {
 				continue;
 			}
 
-			// Create the list of ids of eligible chilren.
+			// Create the list of IDs of eligible children.
 			ArrayList<Integer> eligibleChildren = new ArrayList<Integer>();
 			for (int j = i; j < eligibilityList1.size(); ++j) {
 				if (eligibilityList1.get(j)) {
@@ -240,6 +247,15 @@ public class GraphGenerator {
 				case "NAME_FILEPATH:":
 					NAME_FILEPATH = s.next();
 					break;
+				case "MAX_GROUPS:":
+					MAX_GROUPS = s.nextInt();
+					break;
+				case "TOTAL_GROUPS:":
+					TOTAL_GROUPS = s.nextInt();
+					break;
+				case "ADOPTION_PROBABILITY:":
+					ADOPTION_PROBABILITY = s.nextInt();
+					break;
 				case "MIN_REPRODUCTIVE_AGE:":
 					MIN_REPRODUCTIVE_AGE = s.nextInt();
 					break;
@@ -279,54 +295,13 @@ public class GraphGenerator {
 		}
 		return 0;
 	}
-	
-	/**
-	 * Method interconnectSociallyHelper
-	 * TODO: Potential problem with this never finding a valid ID.
-	 * Need to rethink this later, especially with small populations.
-	 * 
-	 * @param uniques
-	 * @param maxConnections
-	 * @param sourceID
-	 */
-	private void interconnectSociallyHelper(ArrayList<Integer> uniques, int maxConnections, int sourceID){
-		int i = 0;
-		int target = -1;
-		while(i < maxConnections){
-			//Generate potential connection ID
-			target = rand.nextInt(humans.size());
-			
-			//Check for validity.
-			if(target == sourceID) continue;
-			if(humans.get(sourceID).hasRelationship(target)) continue;
-			
-			//Target has passed the gauntlet. Add to uniques arraylist.
-			uniques.add(target);
-			++i;
-		}
-	}
-	
-	
-	/**
-	 * Method makeRelationshipConnection
-	 * TODO: Make a reasonable relationship generator. Based on family/owing money/etc.
-	 * 
-	 * @param a (int) Represents some human by id.
-	 * @param b (int) Represents some human by id.
-	 * @return (int) 0: Failure. 1: Success.
-	 */
-	private int makeRelationshipConnection(int a, int b){
-		humans.get(a).addRelationship(b);
-		humans.get(b).addRelationship(a);
-		return 1;
-	}
 
 	/**
 	 * Method ages This creates a distribution of ages and assigns them to the
 	 * Human objects. Does this in a greatest -> least order.
 	 * 
 	 * TODO: Add distribution functions.
-	 * 
+	 * Could use http://www.ckollars.org/population-distribution-age-sex-desktop.html
 	 * 
 	 */
 	private void ages() {

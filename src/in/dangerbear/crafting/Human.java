@@ -20,13 +20,14 @@ public class Human extends Node {
 	public int fatherID = -1;
 	public int motherID = -1;
 	public ArrayList<Integer> children;
-	public ArrayList<Integer> relations;
+	public ArrayList<Integer> groups;
 	
 	
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public Human() {
 		super();
 		children = new ArrayList<Integer>();
+		groups = new ArrayList<Integer>();
 	}
 	
 	/**
@@ -39,7 +40,7 @@ public class Human extends Node {
 		this.firstName = firstName;
 		this.gender = gender;
 		children = new ArrayList<Integer>();
-		relations = new ArrayList<Integer>();
+		groups = new ArrayList<Integer>();
 	}
 	
 	/**
@@ -49,7 +50,7 @@ public class Human extends Node {
 		super();
 		this.lastName = lastName;
 		children = new ArrayList<Integer>();
-		relations = new ArrayList<Integer>();
+		groups = new ArrayList<Integer>();
 	}
 	
 	
@@ -90,9 +91,10 @@ public class Human extends Node {
 		return children.size();
 	}
 	
-	public ArrayList<Integer> getSocialConnections(){
+/*	public ArrayList<Integer> getSocialConnections(){
 		return relations;
 	}
+*/	
 	
 	public int getAge() {
 		return age;
@@ -113,9 +115,9 @@ public class Human extends Node {
 		return output;
 	}
 	
-	public boolean hasRelationship(int target) {
-		for(int i = 0; i < relations.size(); ++i){
-			if(relations.get(i).equals(target)) return true;
+	public boolean hasRelationship(int targetGroup) {
+		for(int i = 0; i < groups.size(); ++i){
+			if(groups.get(i).equals(targetGroup)) return true;
 		}
 		return false;
 	}
@@ -132,9 +134,8 @@ public class Human extends Node {
 		children.add(childID);
 	}
 	
-	public void addRelationship(int humanID) {
-		relations.add(humanID);
-		
+	public void addToGroup(int groupID) {
+		groups.add(groupID);
 	}
 
 	public void setLastName(String lastName) {
