@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.ListIterator;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
@@ -174,6 +175,20 @@ public class GraphGenerator {
 			while(maxOffspring > 0 && eligibleChildren.size() > 0) {
 				makeGeneticConnection(parent.ID, eligibleChildren.remove());
 				--maxOffspring;
+			}
+		}
+		
+		//Make sure most nodes have parents. Youngest first.
+		ListIterator<Human> li = humans.listIterator(humans.size());
+
+		while(li.hasPrevious()){
+			Human child = li.previous();
+			//Obtain mother.
+			if(child.getMotherID() == -1){
+				
+			}
+			if(child.getFatherID() == -1){
+				
 			}
 		}
 	}
