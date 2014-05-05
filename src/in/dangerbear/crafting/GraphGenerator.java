@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GraphGenerator {
 ////DECLARATIONS///////////////////////////////////////////////////////////////
@@ -55,17 +57,6 @@ public class GraphGenerator {
 	 * Method generate
 	 * Generates the eligible last names and the Humans
 	 * with random gender assignment and names.
-	 * 
-	 * @param families
-	 *            (int) The number of families to generate (last names).
-	 * @param people
-	 *            (int) The number of total people to generate.
-	 * @param males
-	 *            (ArrayList<String>) List of male first names.
-	 * @param females
-	 *            (ArrayList<String>) List of female first names.
-	 * @param lasts
-	 *            (ArrayList<String>) List of last names.
 	 */
 	public ArrayList<Human> generate() {
 		dp("DEBUG : In the generate function.");
@@ -100,7 +91,6 @@ public class GraphGenerator {
 		males.clear();
 		females.clear();
 
-		// Generate the ages of the populace.
 		dp("DEBUG : Generating ages.");
 		ages();
 		dp("DEBUG : Making genetic interconnections.");
@@ -110,28 +100,6 @@ public class GraphGenerator {
 		
 		return humans;
 	}
-
-
-	/**
-	 * Method interconnectSocially
-	 * Connects the humans randomly.
-	 * TODO: Change to use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total population.)
-	 * 
-	 */
-	private void interconnectSocially(){
-		for(int i = 0; i < humans.size(); ++i){
-			int maxGroups = rand.nextInt(MAX_GROUPS);
-			int humanChoice;
-			int groupChoice;
-			//create an array that stores unique connections. Protects against redundancy later.
-			
-			for(int j = 0; j < maxGroups; ++j){
-				humanChoice = rand.nextInt(humans.size());
-				groupChoice = rand.nextInt(TOTAL_GROUPS);
-				humans.get(humanChoice).addToGroup(groupChoice);
-			}
-		}
-	}
 	
 	/**
 	 * Method interconnectGenetically
@@ -139,13 +107,12 @@ public class GraphGenerator {
 	 * for every Human. Using the value returned by helper function
 	 * makeConnection, this attempts to stop connections ASAP.
 	 * 
-	 * XXX: Some bad things are making too many clusters. Need to
+	 * XXX: Some bad things are making too many disparate clusters. Need to
 	 * fix.
 	 * 
 	 */
 	private void interconnectGenetically() {
-		for (int i = 0; i < humans.size(); ++i) {
-			Human parent = humans.get(i);
+		for (Human parent: humans) {
 			// Hit the lowest age. No one after this can have children. End!
 			if (parent.getAge() < MIN_REPRODUCTIVE_AGE) {
 				return;
@@ -154,14 +121,14 @@ public class GraphGenerator {
 			// Set everything up to the current human's ID to false. They are
 			// all older.
 			eligibilityList1.clear();
-			eligibilityList1.set(i + 1, humans.size(), true);
+			eligibilityList1.set(parent.ID, humans.size(), true);
 
 			// Begin elimination of potential child connections.
-			for (int j = i; j < humans.size(); ++j) {
+			for (int j = parent.ID; j < humans.size(); ++j) {
 				Human child = humans.get(j);
 
 				// Check for sameness.
-				if (i == j) {
+				if (parent.ID == j) {
 					eligibilityList1.set(j, false);
 				}
 				// Check for age difference.
@@ -173,7 +140,7 @@ public class GraphGenerator {
 				// TODO: Fiddle with the ADOPTION_PROBABILITY
 				if (!parent.getLastName().equals(child.getLastName())) {
 					//Adoption eligibility
-					if(rand.nextInt(100) > ADOPTION_PROBABILITY){
+					if(rand.nextInt(100) + 1 >= ADOPTION_PROBABILITY){
 						eligibilityList1.set(j, false);
 					}
 				}
@@ -193,79 +160,42 @@ public class GraphGenerator {
 			}
 
 			// Create the list of IDs of eligible children.
-			ArrayList<Integer> eligibleChildren = new ArrayList<Integer>();
-			for (int j = i; j < eligibilityList1.size(); ++j) {
+			Queue<Integer> eligibleChildren = new ConcurrentLinkedQueue<Integer>();
+			for (int j = parent.ID; j < eligibilityList1.size(); ++j) {
 				if (eligibilityList1.get(j)) {
 					eligibleChildren.add(j);
 				}
 			}
-
-			// Attempt to make a random amount of connections between the
-			// current
-			// node and the eligible children nodes.
-			int maxOffspring = rand.nextInt(MAX_OFFSPRING);
-			for (int j = 0; j < maxOffspring; ++j) {
-				// There's only one eligible unit left! Connect and stop.
-				if (eligibleChildren.size() == 1) {
-					makeGeneticConnection(i, eligibleChildren.get(0));
-					break;
-				}
-
-				// Connect the ith person and someone from their eligible list.
-				int index = rand.nextInt(eligibleChildren.size());
-				makeGeneticConnection(i, eligibleChildren.get(index));
-				eligibleChildren.remove(index);
+			
+			/* Attempt to make a random amount of connections between the
+			 * current node and the eligible children nodes.
+			 */
+			int maxOffspring = rand.nextInt(MAX_OFFSPRING + 1);
+			while(maxOffspring > 0 && eligibleChildren.size() > 0) {
+				makeGeneticConnection(parent.ID, eligibleChildren.remove());
+				--maxOffspring;
 			}
 		}
 	}
 
 	/**
-	 * Method readConfig
-	 * Simple routine to read the Genetics config files.
-	 * Populates generational variables.
+	 * Method interconnectSocially
+	 * Connects the humans randomly.
+	 * TODO: Change to use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total population.)
 	 * 
 	 */
-	public static void readConfig() {
-		File file = new File("Configs/Genetics.ini");
-		try {
-			Scanner s = new Scanner(file);
-			while (s.hasNext()) {
-				String inputToken = s.next();
-				switch (inputToken) {
-				case "POPULATION:":
-					POPULATION = s.nextInt();
-					break;
-				case "FAMILIES:":
-					FAMILIES = s.nextInt();
-					break;
-				case "MAX_OFFSPRING:":
-					MAX_OFFSPRING = s.nextInt();
-					break;
-				case "MAX_AGE:":
-					MAX_AGE = s.nextInt();
-					break;
-				case "NAME_FILEPATH:":
-					NAME_FILEPATH = s.next();
-					break;
-				case "MAX_GROUPS:":
-					MAX_GROUPS = s.nextInt();
-					break;
-				case "TOTAL_GROUPS:":
-					TOTAL_GROUPS = s.nextInt();
-					break;
-				case "ADOPTION_PROBABILITY:":
-					ADOPTION_PROBABILITY = s.nextInt();
-					break;
-				case "MIN_REPRODUCTIVE_AGE:":
-					MIN_REPRODUCTIVE_AGE = s.nextInt();
-					break;
-				default:
-					break;
-				}
+	private void interconnectSocially(){
+		for(int i = 0; i < humans.size(); ++i){
+			int maxGroups = rand.nextInt(MAX_GROUPS);
+			int humanChoice;
+			int groupChoice;
+			//create an array that stores unique connections. Protects against redundancy later.
+			
+			for(int j = 0; j < maxGroups; ++j){
+				humanChoice = rand.nextInt(humans.size());
+				groupChoice = rand.nextInt(TOTAL_GROUPS);
+				humans.get(humanChoice).addToGroup(groupChoice);
 			}
-			s.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -317,6 +247,54 @@ public class GraphGenerator {
 		for (int i = 0; i < POPULATION; ++i) {
 			humans.get(i).setAge(ages[POPULATION - 1 - i]);
 		}
+	}
+	
+	/**
+	 * Method readConfig
+	 * Simple routine to read the Genetics config files.
+	 * Populates generational variables.
+	 * 
+	 */
+	public static void readConfig() {
+		File file = new File("Configs/Genetics.ini");
+		try {
+			Scanner s = new Scanner(file);
+			while (s.hasNext()) {
+				String inputToken = s.next();
+				switch (inputToken) {
+				case "POPULATION:":
+					POPULATION = s.nextInt();
+					break;
+				case "FAMILIES:":
+					FAMILIES = s.nextInt();
+					break;
+				case "MAX_OFFSPRING:":
+					MAX_OFFSPRING = s.nextInt();
+					break;
+				case "MAX_AGE:":
+					MAX_AGE = s.nextInt();
+					break;
+				case "NAME_FILEPATH:":
+					NAME_FILEPATH = s.next();
+					break;
+				case "MAX_GROUPS:":
+					MAX_GROUPS = s.nextInt();
+					break;
+				case "TOTAL_GROUPS:":
+					TOTAL_GROUPS = s.nextInt();
+					break;
+				case "ADOPTION_PROBABILITY:":
+					ADOPTION_PROBABILITY = s.nextInt();
+					break;
+				case "MIN_REPRODUCTIVE_AGE:":
+					MIN_REPRODUCTIVE_AGE = s.nextInt();
+					break;
+				default:
+					break;
+				}
+			}
+			s.close();
+		} catch (FileNotFoundException e){}
 	}
 	
 	private void dp(String input){
