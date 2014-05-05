@@ -44,10 +44,33 @@ public class Run{ //extends JApplet {
 		humans = tree.generate();
 		treeDemo = new GraphDemo(humans);
 		
-		
 		System.out.println("Finished generating!");
 
-		// Output data of generated populace.
+		//Run tests.
+		//test1(); //PrintNthConnection test.
+		//test2(); //Rumor spread test.
+		//graphics(); //Start visualization.
+		
+		treeDemo.DEBUG_PRINT(humans);
+	}
+
+	private static void graphics() {
+		/*
+		// Graph segment.
+		Run applet = new Run();
+		applet.init();
+
+		JFrame frame = new JFrame();
+		frame.getContentPane().add(applet);
+		frame.setTitle("JGraphT Adapter to JGraph Demo");
+		frame.setSize(800, 800);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+		*/
+	}
+
+	private static void test1() {
 		treeDemo.printNthConnections(humans, 0, 1);
 		treeDemo.printNthConnections(humans, 0, 2);
 		treeDemo.printNthConnections(humans, 0, 3);
@@ -56,10 +79,10 @@ public class Run{ //extends JApplet {
 		treeDemo.printNthConnections(humans, 1, 3);
 		treeDemo.printNthConnections(humans, 2, 1);
 		treeDemo.printNthConnections(humans, 2, 2);
-		treeDemo.printNthConnections(humans, 2, 3);
-
-		treeDemo.DEBUG_PRINT(humans);
-		
+		treeDemo.printNthConnections(humans, 2, 3);		
+	}
+	
+	private static void test2() {
 		//Rumor spreading tests.
 		ArrayList<Integer> vectors = new ArrayList<Integer>();
 		int TESTS = 5;
@@ -89,45 +112,30 @@ public class Run{ //extends JApplet {
 			}
 			
 			System.out.println();
-			/*System.out.println("1% chance to propagate.");
-			tree.startRumor(vectors, 1);
+			System.out.println("1% chance to propagate.");
+			treeDemo.startRumor(humans, vectors, 1);
 			System.out.println("2% chance to propagate.");
-			tree.startRumor(vectors, 2);
+			treeDemo.startRumor(humans, vectors, 2);
 			System.out.println("4% chance to propagate.");
-			tree.startRumor(vectors, 4);
+			treeDemo.startRumor(humans, vectors, 4);
 			System.out.println("5 chance to propagate.");
-			tree.startRumor(vectors, 5);
+			treeDemo.startRumor(humans, vectors, 5);
 			System.out.println("10 chance to propagate.");
-			tree.startRumor(vectors, 10);
+			treeDemo.startRumor(humans, vectors, 10);
 			System.out.println("20% chance to propagate.");
-			tree.startRumor(vectors, 20);
+			treeDemo.startRumor(humans, vectors, 20);
 			System.out.println("30% chance to propagate.");
-			tree.startRumor(vectors, 30);
+			treeDemo.startRumor(humans, vectors, 30);
 			System.out.println("40% chance to propagate.");
-			tree.startRumor(vectors, 40);
+			treeDemo.startRumor(humans, vectors, 40);
 			System.out.println("50% chance to propagate.");
-			tree.startRumor(vectors, 50);
+			treeDemo.startRumor(humans, vectors, 50);
 			System.out.println("60% chance to propagate.");
-			tree.startRumor(vectors, 60);
+			treeDemo.startRumor(humans, vectors, 60);
 			System.out.println();
-			*/
-
-		
+			
 		}
 		
-		/*
-		// Graph segment.
-		Run applet = new Run();
-		applet.init();
-
-		JFrame frame = new JFrame();
-		frame.getContentPane().add(applet);
-		frame.setTitle("JGraphT Adapter to JGraph Demo");
-		frame.setSize(800, 800);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-		*/
 	}
 
 	/*public void init() {
