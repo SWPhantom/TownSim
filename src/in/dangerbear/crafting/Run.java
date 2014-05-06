@@ -56,7 +56,8 @@ public class Run{ // extends JApplet {
 
 	private static void graphics(){
 		/*
-		Run applet = new Run(); applet.init();
+		Run applet = new Run();
+		applet.init();
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(applet);
 		frame.setTitle("JGraphT Adapter to JGraph Demo");
@@ -152,8 +153,8 @@ public class Run{ // extends JApplet {
 		for(Human person: humans){
 			for(int j = 0; j < person.getNumChildren(); ++j){
 			Human child = person.children.get(j);
-			String source = person.getName() + "(" + person.getAge() + ")");
-			String target = child.getName() + "(" + child.getAge() + ")");
+			String source = person.getName() + "(" + person.getAge() + ")";
+			String target = child.getName() + "(" + child.getAge() + ")";
 				g.addEdge(source, target);
 			}
 		}
