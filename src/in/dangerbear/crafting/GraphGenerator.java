@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GraphGenerator{
-	////DECLARATIONS///////////////////////////////////////////////////////////////
+////DECLARATIONS///////////////////////////////////////////////////////////////
 	////Statics
 	public final static int MALE = 0;
 	public final static int FEMALE = 1;
@@ -39,7 +39,7 @@ public class GraphGenerator{
 	Random rand = new Random();
 	Parser parser;
 
-	////CONSTRUCTORS///////////////////////////////////////////////////////////////
+////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public GraphGenerator(){
 		humans = new ArrayList<Human>();
 		parser = new Parser();
@@ -52,11 +52,12 @@ public class GraphGenerator{
 
 	}
 
-	////METHODS////////////////////////////////////////////////////////////////////
+////METHODS////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Method generate Generates the eligible last names and the Humans with
-	 * random gender assignment and names.
+	 * Method generate
+	 * Generates the eligible last names and the Humans with random gender
+	 * assignment and names.
 	 */
 	public ArrayList<Human> generate(){
 		dp("DEBUG : In the generate function.");
@@ -102,12 +103,14 @@ public class GraphGenerator{
 	}
 
 	/**
-	 * Method interconnectGenetically Starts attempting to create parent/child
-	 * connections for every Human. Using the value returned by helper function
-	 * makeConnection, this attempts to stop connections ASAP.
+	 * Method interconnectGenetically
+	 * Starts attempting to create parent/child connections for every Human.
+	 * Using the value returned by helper function makeConnection, this
+	 * attempts to stop connections ASAP.
 	 * 
 	 * XXX: Some bad things are making too many disparate clusters. Need to fix.
-	 * 
+	 * TODO: Change genetic interconnection by having lastName-> ArrayList<Integer>
+	 *       mapping to make things easier. Remove EligibilityList use.
 	 */
 	private void interconnectGenetically(){
 		for(Human parent: humans){
@@ -123,38 +126,28 @@ public class GraphGenerator{
 			eligibilityList1.set(parent.ID, humans.size(), true);
 
 			// Begin elimination of potential child connections.
-			for(int j = parent.ID; j < humans.size(); ++j){
+			for(int j = parent.ID + 1; j < humans.size(); ++j){
 				Human child = humans.get(j);
 
-				// Check for sameness.
-				if(parent.ID == j){
-					eligibilityList1.set(j, false);
-					continue;
-				}
+				//These booleans help with the eligibility checking.
+				boolean ageProx = parentAge - child.getAge() < MIN_REPRODUCTIVE_AGE;
+				boolean matchingFather = parent.getGender() == MALE && child.getFatherID() != -1;
+				boolean matchingMother = parent.getGender() == FEMALE && child.getMotherID() != -1;
+				boolean sameFamily = parent.getLastName().equals(child.getLastName());
+				
 				// Check for age difference.
-				if(parentAge - child.getAge() < MIN_REPRODUCTIVE_AGE){
+				if(ageProx || matchingFather || matchingMother){
 					eligibilityList1.set(j, false);
 					continue;
 				}
 
 				// Check for name difference.
-				// TODO: Fiddle with the ADOPTION_PROBABILITY
-				if(!parent.getLastName().equals(child.getLastName())){
+				if(!sameFamily){
 					//Adoption eligibility
 					if(rand.nextInt(100) + 1 >= ADOPTION_PROBABILITY){
 						eligibilityList1.set(j, false);
 						continue;
 					}
-				}
-
-				// Check for existing parenthood.
-				if(parent.getGender() == MALE && child.getFatherID() != -1){
-					eligibilityList1.set(j, false);
-					continue;
-				}
-				if(parent.getGender() == FEMALE && child.getMotherID() != -1){
-					eligibilityList1.set(j, false);
-					continue;
 				}
 			}
 
@@ -218,30 +211,27 @@ public class GraphGenerator{
 	}
 
 	/**
-	 * Method interconnectSocially Connects the humans randomly. TODO: Change to
-	 * use MAX_SOCIAL_CLUSTER_SIZE (an integer, or percentage of total
-	 * population.)
-	 * 
+	 * Method interconnectSocially
+	 * Connects the humans randomly by putting them into different groups.
 	 */
 	private void interconnectSocially(){
-		for(int i = 0; i < humans.size(); ++i){
+		for(Human target: humans){
 			int maxGroups = rand.nextInt(MAX_GROUPS);
-			int humanChoice;
 			int groupChoice;
+			
 			//create an array that stores unique connections. Protects against redundancy later.
-
 			for(int j = 0; j < maxGroups; ++j){
-				humanChoice = rand.nextInt(humans.size());
 				groupChoice = rand.nextInt(TOTAL_GROUPS);
-				humans.get(humanChoice).addToGroup(groupChoice);
+				target.addToGroup(groupChoice);
 			}
+			
 		}
 	}
 
 	////Helpers
-
 	/**
-	 * Method makeConnection Connects the parent and child nodes, according to
+	 * Method makeConnection
+	 * Connects the parent and child nodes, according to
 	 * parameter IDs. Makes sure the genders match on the parent connections.
 	 * 
 	 * @param parent (int) referencing the ID number of parent.
@@ -264,12 +254,12 @@ public class GraphGenerator{
 	}
 
 	/**
-	 * Method ages This creates a distribution of ages and assigns them to the
+	 * Method ages
+	 * This creates a distribution of ages and assigns them to the
 	 * Human objects. Does this in a greatest -> least order.
 	 * 
 	 * TODO: Add distribution functions. Could use
 	 * http://www.ckollars.org/population-distribution-age-sex-desktop.html
-	 * 
 	 */
 	private void ages(){
 		int ages[] = new int[POPULATION];
@@ -287,9 +277,9 @@ public class GraphGenerator{
 	}
 
 	/**
-	 * Method readConfig Simple routine to read the Genetics config files.
+	 * Method readConfig
+	 * Simple routine to read the Genetics config files.
 	 * Populates generational variables.
-	 * 
 	 */
 	public static void readConfig(){
 		File file = new File("Configs/Genetics.ini");
@@ -339,5 +329,4 @@ public class GraphGenerator{
 			System.out.println(input);
 		}
 	}
-
 }

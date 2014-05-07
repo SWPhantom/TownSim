@@ -44,6 +44,7 @@ public class Run{ // extends JApplet {
 		//graphics(); //Start visualization.
 
 		treeDemo.DEBUG_PRINT(humans);
+		treeDemo.DEBUG_PRINT_GROUPS(humans);
 	}
 
 	private static void waitToBegin(){
