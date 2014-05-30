@@ -22,6 +22,7 @@ public class GraphGenerator{
 	public static int POPULATION = 2000;
 	public static int MAX_OFFSPRING = 20;
 	public static int MIN_REPRODUCTIVE_AGE = 15;
+	public static int MAX_REPRODUCTIVE_AGE = 40;
 	public static int MAX_AGE = 100;
 	public static int MAX_GROUPS = 10;
 	public static int TOTAL_GROUPS = 50;
@@ -115,6 +116,7 @@ public class GraphGenerator{
 	private void interconnectGenetically(){
 		for(Human parent: humans){
 			int parentAge = parent.getAge();
+			int parentGender = parent.getGender();
 			// Hit the lowest age. No one after this can have children. End!
 			if(parentAge < MIN_REPRODUCTIVE_AGE){
 				break;
@@ -126,17 +128,18 @@ public class GraphGenerator{
 			eligibilityList1.set(parent.ID, humans.size(), true);
 
 			// Begin elimination of potential child connections.
-			for(int j = parent.ID + 1; j < humans.size(); ++j){
+			for(int j = parent.ID; j < humans.size(); ++j){
 				Human child = humans.get(j);
-
+				int childAge = child.getAge();
 				//These booleans help with the eligibility checking.
-				boolean ageProx = parentAge - child.getAge() < MIN_REPRODUCTIVE_AGE;
-				boolean matchingFather = parent.getGender() == MALE && child.getFatherID() != -1;
-				boolean matchingMother = parent.getGender() == FEMALE && child.getMotherID() != -1;
+				boolean ageMin = parentAge - childAge< MIN_REPRODUCTIVE_AGE;
+				boolean ageMax = parentGender == FEMALE && parentAge - childAge > MAX_REPRODUCTIVE_AGE;
+				boolean matchingFather = parentGender == MALE && child.getFatherID() != -1;
+				boolean matchingMother = parentGender == FEMALE && child.getMotherID() != -1;
 				boolean sameFamily = parent.getLastName().equals(child.getLastName());
 				
 				// Check for age difference.
-				if(ageProx || matchingFather || matchingMother){
+				if(ageMin || ageMax || matchingFather || matchingMother){
 					eligibilityList1.set(j, false);
 					continue;
 				}
@@ -314,6 +317,9 @@ public class GraphGenerator{
 					break;
 				case "MIN_REPRODUCTIVE_AGE:":
 					MIN_REPRODUCTIVE_AGE = s.nextInt();
+					break;
+				case "MAX_REPRODUCTIVE_AGE:":
+					MAX_REPRODUCTIVE_AGE = s.nextInt();
 					break;
 				default:
 					break;
