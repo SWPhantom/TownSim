@@ -40,11 +40,11 @@ public class Run{ // extends JApplet {
 
 		//Run tests.
 		//test1(); //PrintNthConnection test.
-		//test2(); //Rumor spread test.
+		test2(false); //Rumor spread test. true lets infectors reinfect. false disallows reinfect.
 		//graphics(); //Start visualization.
 
-		treeDemo.DEBUG_PRINT(humans);
-		treeDemo.DEBUG_PRINT_GROUPS(humans);
+		//treeDemo.DEBUG_PRINT(humans);
+		//treeDemo.DEBUG_PRINT_GROUPS(humans);
 	}
 
 	private static void waitToBegin(){
@@ -81,7 +81,7 @@ public class Run{ // extends JApplet {
 		treeDemo.printNthConnections(humans, 2, 3);
 	}
 
-	private static void test2(){
+	private static void test2(boolean reinfect){
 		//Rumor spreading tests.
 		ArrayList<Integer> vectors = new ArrayList<Integer>();
 		int TESTS = 5;
@@ -111,27 +111,27 @@ public class Run{ // extends JApplet {
 				System.out.print(vectors.get(j) + ", ");
 			}
 
-			System.out.println();
+			System.out.println("\nStart Population: " + vectors.size());
 			System.out.println("1% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 1);
+			treeDemo.startRumor(humans, vectors, 1, reinfect);
 			System.out.println("2% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 2);
+			treeDemo.startRumor(humans, vectors, 2, reinfect);
 			System.out.println("4% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 4);
+			treeDemo.startRumor(humans, vectors, 4, reinfect);
 			System.out.println("5 chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 5);
+			treeDemo.startRumor(humans, vectors, 5, reinfect);
 			System.out.println("10 chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 10);
+			treeDemo.startRumor(humans, vectors, 10, reinfect);
 			System.out.println("20% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 20);
+			treeDemo.startRumor(humans, vectors, 20, reinfect);
 			System.out.println("30% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 30);
+			treeDemo.startRumor(humans, vectors, 30, reinfect);
 			System.out.println("40% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 40);
+			treeDemo.startRumor(humans, vectors, 40, reinfect);
 			System.out.println("50% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 50);
+			treeDemo.startRumor(humans, vectors, 50, reinfect);
 			System.out.println("60% chance to propagate.");
-			treeDemo.startRumor(humans, vectors, 60);
+			treeDemo.startRumor(humans, vectors, 60, reinfect);
 			System.out.println();
 		}
 	}

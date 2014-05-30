@@ -44,7 +44,7 @@ public class GraphDemo{
 	 * @param infectionProbability
 	 */
 	public void startRumor(ArrayList<Human> humans,
-			ArrayList<Integer> initialVectors, int infectionProbability){
+			ArrayList<Integer> initialVectors, int infectionProbability, boolean reinfect){
 		int totalInfected = initialVectors.size();
 
 		//Create a queue to keep track of who is to try infecting.
@@ -64,7 +64,7 @@ public class GraphDemo{
 			ArrayList<Integer> infectorConnections = new ArrayList<Integer>();
 
 			for(Human target: humans){
-				if(eligibilityList1.get(target.ID)){
+				if(!eligibilityList1.get(target.ID)){
 					Iterator<Integer> it = infector.groups.iterator();
 					while(it.hasNext()){
 						if(target.isInGroup(it.next())){
@@ -79,7 +79,7 @@ public class GraphDemo{
 
 			for(int i = 0; i < infectorConnections.size(); ++i){
 				boolean infected = startRumorHelper(infectorID,
-						infectorConnections.get(i), infectionProbability);
+						infectorConnections.get(i), infectionProbability, reinfect);
 				if(infected){
 					infectionOrder.add(infectorConnections.get(i));
 					++totalInfected;
@@ -95,7 +95,9 @@ public class GraphDemo{
 	}
 
 	/**
-	 * Method startRumorHelper TODO: The reason this takes in infectorID is to
+	 * Method startRumorHelper 
+	 * 
+	 * TODO: The reason this takes in infectorID is to
 	 * determine connection-specific infection probability (how much the pair of
 	 * people like each other, etc).
 	 * 
@@ -105,11 +107,14 @@ public class GraphDemo{
 	 * @return
 	 */
 	private boolean startRumorHelper(int infectorID, int targetID,
-			int infectionProbability){
+			int infectionProbability, boolean reinfect){
 		//Check to see if the target is already infected.
 		if(eligibilityList1.get(targetID)) return false;
 		//Not infected already. See if infection occurs.
-		if(rand.nextInt(100) >= infectionProbability) return false;
+		if(rand.nextInt(100) >= infectionProbability){
+			if(reinfect) eligibilityList1.set(targetID);
+			return false;
+		}
 
 		//Infection has occurred. Add to the infected list.
 		eligibilityList1.set(targetID);
