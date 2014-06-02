@@ -64,11 +64,11 @@ public class GraphDemo{
 			ArrayList<Integer> infectorConnections = new ArrayList<Integer>();
 
 			for(Human target: humans){
-				if(!eligibilityList1.get(target.ID)){
-					Iterator<Integer> it = infector.groups.iterator();
+				if(!eligibilityList1.get(target.getID())){
+					Iterator<Integer> it = infector.getGroups().iterator();
 					while(it.hasNext()){
 						if(target.isInGroup(it.next())){
-							infectorConnections.add(target.ID);
+							infectorConnections.add(target.getID());
 							break;
 						}
 					}
@@ -295,7 +295,8 @@ public class GraphDemo{
 			if(target.getNumChildren() > 0){
 				dp(" Children:");
 				for(int j = 0; j < target.getNumChildren(); ++j){
-					family = humans.get(target.children.get(j));
+					ArrayList<Integer> children = target.getChildren();
+					family = humans.get(children.get(j));
 					dp("  " + family.getName() + "(" + family.getAge() + ")");
 				}
 			}
@@ -331,7 +332,7 @@ public class GraphDemo{
 			StringBuilder output = new StringBuilder();
 			output.append(target.getName());
 			output.append(": ");
-			for(Integer group: target.groups){
+			for(Integer group: target.getGroups()){
 				output.append(group);
 				output.append(", ");
 			}

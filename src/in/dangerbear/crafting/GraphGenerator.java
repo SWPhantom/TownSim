@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GraphGenerator{
@@ -44,8 +45,10 @@ public class GraphGenerator{
 	public GraphGenerator(){
 		humans = new ArrayList<Human>();
 		parser = new Parser();
+		
 
 		readConfig();
+		eligibilityList1 =  new BitSet(POPULATION);
 		// Choose and parse name files.
 		parser.feedInput(NAME_FILEPATH, MALE);
 		parser.feedInput(NAME_FILEPATH, FEMALE);
@@ -66,17 +69,23 @@ public class GraphGenerator{
 		this.females = parser.getNameList(FEMALE);
 		this.lasts = parser.getNameList(LAST);
 
-		eligibilityList1 = new BitSet(POPULATION);
+		TreeSet<Integer> nameIndeces = new TreeSet<Integer>();
 		String tempLasts[] = new String[FAMILIES];
 		String tempLastName;
 		String tempFirstName;
 
-		dp("Making families.");
+		dp("DEBUG : Picking unique family names.");
+		int numberOfLastNames = lasts.size();
+		int iter = FAMILIES;
+		while(iter > 0){
+			if(nameIndeces.add(rand.nextInt(numberOfLastNames))){
+				--iter;
+			}
+		}
 		for(int i = 0; i < FAMILIES; ++i){
-			// TODO: Implement a less costly no-repeat functionality.
-			int choice = rand.nextInt(lasts.size());
-			tempLasts[i] = lasts.get(choice);
-			lasts.remove(choice);
+			int first = nameIndeces.first();
+			nameIndeces.remove(first);
+			tempLasts[i] = lasts.get(first);
 		}
 		lasts.clear();
 
@@ -125,10 +134,10 @@ public class GraphGenerator{
 			// Set everything up to the current human's ID to false. They are
 			// all older.
 			eligibilityList1.clear();
-			eligibilityList1.set(parent.ID, humans.size(), true);
+			eligibilityList1.set(parent.getID(), humans.size(), true);
 
 			// Begin elimination of potential child connections.
-			for(int j = parent.ID; j < humans.size(); ++j){
+			for(int j = parent.getID(); j < humans.size(); ++j){
 				Human child = humans.get(j);
 				int childAge = child.getAge();
 				//These booleans help with the eligibility checking.
@@ -161,7 +170,7 @@ public class GraphGenerator{
 
 			// Create the list of IDs of eligible children.
 			Queue<Integer> eligibleChildren = new ConcurrentLinkedQueue<Integer>();
-			for(int j = parent.ID; j < eligibilityList1.size(); ++j){
+			for(int j = parent.getID(); j < eligibilityList1.size(); ++j){
 				if(eligibilityList1.get(j)){
 					eligibleChildren.add(j);
 				}
@@ -172,7 +181,7 @@ public class GraphGenerator{
 			 */
 			int maxOffspring = rand.nextInt(MAX_OFFSPRING + 1);
 			while(maxOffspring > 0 && eligibleChildren.size() > 0){
-				makeGeneticConnection(parent.ID, eligibleChildren.remove());
+				makeGeneticConnection(parent.getID(), eligibleChildren.remove());
 				--maxOffspring;
 			}
 		}
@@ -193,7 +202,7 @@ public class GraphGenerator{
 	}
 
 	private void getParent(Human child, int gender){
-		int iter = child.ID;
+		int iter = child.getID();
 		int childAge = child.getAge();
 		Human parent;
 
@@ -208,7 +217,7 @@ public class GraphGenerator{
 			if(!parent.getLastName().equals(child.getLastName())){
 				continue;
 			}
-			makeGeneticConnection(parent.ID, child.ID);
+			makeGeneticConnection(parent.getID(), child.getID());
 			break;
 		}
 	}
@@ -219,10 +228,9 @@ public class GraphGenerator{
 	 */
 	private void interconnectSocially(){
 		for(Human target: humans){
-			int maxGroups = rand.nextInt(MAX_GROUPS);
+			int maxGroups = rand.nextInt(MAX_GROUPS) + 1;
 			int groupChoice;
 			
-			//create an array that stores unique connections. Protects against redundancy later.
 			for(int j = 0; j < maxGroups; ++j){
 				groupChoice = rand.nextInt(TOTAL_GROUPS);
 				target.addToGroup(groupChoice);

@@ -13,14 +13,14 @@ public class Human extends Node{
 	public final static int MALE = 0;
 
 	////Class Variables
-	public String lastName;
-	public String firstName;
-	public int gender;
-	public int age;
-	public int fatherID = -1;
-	public int motherID = -1;
-	public ArrayList<Integer> children;
-	public TreeSet<Integer> groups;
+	private String lastName;
+	private String firstName;
+	private int gender;
+	private int age;
+	private int fatherID = -1;
+	private int motherID = -1;
+	private ArrayList<Integer> children;
+	private TreeSet<Integer> groups;
 
 ////CONSTRUCTORS///////////////////////////////////////////////////////////////
 	public Human(){
@@ -53,6 +53,9 @@ public class Human extends Node{
 	}
 
 ////METHODS////////////////////////////////////////////////////////////////////
+	public int getID(){
+		return ID;
+	}
 	public int getFatherID(){
 		return fatherID;
 	}
@@ -81,6 +84,10 @@ public class Human extends Node{
 	 */
 	public ArrayList<Integer> getChildren(){
 		return children;
+	}
+	
+	public TreeSet<Integer> getGroups(){
+		return groups;
 	}
 
 	public int getNumChildren(){
