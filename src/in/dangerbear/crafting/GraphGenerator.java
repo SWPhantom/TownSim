@@ -21,6 +21,7 @@ public class GraphGenerator{
 
 	public static int FAMILIES = 80;
 	public static int POPULATION = 2000;
+	public static float MALE_BIRTH_CHANCE = .5f;
 	public static int MAX_OFFSPRING = 20;
 	public static int MIN_REPRODUCTIVE_AGE = 15;
 	public static int MAX_REPRODUCTIVE_AGE = 40;
@@ -91,7 +92,7 @@ public class GraphGenerator{
 
 		for(int i = 0; i < POPULATION; ++i){
 			tempLastName = tempLasts[rand.nextInt(tempLasts.length)];
-			if(rand.nextInt(2) == 0){// Male created
+			if(rand.nextFloat() <= MALE_BIRTH_CHANCE){// Male created
 				tempFirstName = males.get(rand.nextInt(males.size()));
 				humans.add(new Human(tempLastName, tempFirstName, MALE));
 			}else{// Female created
@@ -301,6 +302,9 @@ public class GraphGenerator{
 				switch(inputToken){
 				case "POPULATION:":
 					POPULATION = s.nextInt();
+					break;
+				case "MALE_BIRTH_CHANCE:":
+					MALE_BIRTH_CHANCE = s.nextFloat();
 					break;
 				case "FAMILIES:":
 					FAMILIES = s.nextInt();
