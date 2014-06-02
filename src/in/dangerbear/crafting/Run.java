@@ -1,9 +1,14 @@
 package in.dangerbear.crafting;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+
+import com.google.gson.Gson;
 
 /*
 import java.util.HashMap;
@@ -19,6 +24,10 @@ import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 import org.jgraph.graph.GraphLayoutCache;
 */
+
+
+
+
 
 public class Run{ // extends JApplet {
 	/*
@@ -38,13 +47,29 @@ public class Run{ // extends JApplet {
 
 		System.out.println("Finished generating!");
 
+		//Output JSON.
+		printJson(humans);
+		
 		//Run tests.
 		//test1(); //PrintNthConnection test.
-		test2(false); //Rumor spread test. true lets infectors reinfect. false disallows reinfect.
+		//test2(false); //Rumor spread test. true lets infectors reinfect. false disallows reinfect.
 		//graphics(); //Start visualization.
 
-		//treeDemo.DEBUG_PRINT(humans);
-		//treeDemo.DEBUG_PRINT_GROUPS(humans);
+		treeDemo.DEBUG_PRINT(humans);
+		treeDemo.DEBUG_PRINT_GROUPS(humans);
+	}
+
+	private static void printJson(ArrayList<Human> humans2){
+		Gson gson = new Gson();
+		PrintWriter writer = null;
+		try{
+			writer = new PrintWriter("families.json", "UTF-8");
+			writer.print(gson.toJson(humans2));
+		}catch(FileNotFoundException e){ //Do nothing.
+		}catch(UnsupportedEncodingException e){ //Do nothing.
+		}finally{
+			writer.close();
+		}
 	}
 
 	private static void waitToBegin(){
